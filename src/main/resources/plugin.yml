@@ -1,0 +1,6 @@
+name: Gamerules_Manager_Remake
+version: '${project.version}'
+main: me.ted2001.gamerules_manager_remake.Gamerules_Manager_Remake
+api-version: 1.19
+authors: [ Ted_2001 ]
+description: Configurate world's gamerules via gui. 
