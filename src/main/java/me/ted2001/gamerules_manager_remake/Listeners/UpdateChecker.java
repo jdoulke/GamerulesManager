@@ -1,4 +1,4 @@
-package me.ted2001.gamerules_manager_remake.listeners;
+package me.ted2001.gamerules_manager_remake.Listeners;
 
 import me.ted2001.gamerules_manager_remake.GamerulesManager;
 import org.bukkit.Bukkit;

@@ -3,4 +3,9 @@ version: '${project.version}'
 main: me.ted2001.gamerules_manager_remake.Gamerules_Manager_Remake
 api-version: 1.19
 authors: [ Ted_2001 ]
-description: Configurate world's gamerules via gui. 
+description: Configurate world's gamerules via gui.
+commands:
+  gamerule:
+    description: Open GUI Manager.
+    permission: gamerulemanager.use
+    aliases: [mgamerule,ggamerule,gamerules,gamerulemanager]
