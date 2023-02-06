@@ -5,11 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>me.ted2001</groupId>
-    <artifactId>Gamerules_Manager_Remake</artifactId>
+    <artifactId>GamerulesManager</artifactId>
     <version>1.0</version>
     <packaging>jar</packaging>
 
-    <name>Gamerules_Manager_Remake</name>
+    <name>Gamerules Manager</name>
 
     <description>Configurate world's gamerules via gui.</description>
     <properties>
@@ -43,7 +43,7 @@
                             <relocations>
                                 <relocation>
                                     <pattern>net.wesjd.anvilgui</pattern>
-                                    <shadedPattern>me.ted2001.gamerules_manager_remake.anvilgui</shadedPattern> <!-- Replace [YOUR_PLUGIN_PACKAGE] with your namespace -->
+                                    <shadedPattern>me.ted2001.gamerulesmanager.anvilgui</shadedPattern> <!-- Replace [YOUR_PLUGIN_PACKAGE] with your namespace -->
                                 </relocation>
                                 <relocation>
                                     <pattern>org.bstats</pattern>

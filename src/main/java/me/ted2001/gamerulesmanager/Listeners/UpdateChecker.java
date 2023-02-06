@@ -1,6 +1,6 @@
-package me.ted2001.gamerules_manager_remake.Listeners;
+package me.ted2001.gamerulesmanager.Listeners;
 
-import me.ted2001.gamerules_manager_remake.GamerulesManager;
+import me.ted2001.gamerulesmanager.GamerulesManager;
 import org.bukkit.Bukkit;
 
 import java.io.IOException;

@@ -1,4 +1,4 @@
-package me.ted2001.gamerules_manager_remake.Commands;
+package me.ted2001.gamerulesmanager.Commands;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;

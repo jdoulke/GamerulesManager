@@ -1,6 +1,6 @@
-package me.ted2001.gamerules_manager_remake.Listeners;
+package me.ted2001.gamerulesmanager.Listeners;
 
-import me.ted2001.gamerules_manager_remake.GUI;
+import me.ted2001.gamerulesmanager.GUI;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
@@ -10,7 +10,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
-import static me.ted2001.gamerules_manager_remake.GamerulesManager.serverVersion;
+import static me.ted2001.gamerulesmanager.GamerulesManager.serverVersion;
 
 public class WorldSelectorListener implements Listener {
     public static World WorldSelected;
@@ -30,8 +30,8 @@ public class WorldSelectorListener implements Listener {
                 e.setCancelled(true);
                 Player p = (Player) e.getWhoClicked();
                 String world_name;
-                String clickitem = e.getCurrentItem().getType().toString();
-                if(clickitem.equalsIgnoreCase("GRASS_BLOCK") || clickitem.equalsIgnoreCase("NETHERRACK") || clickitem.equalsIgnoreCase("END_STONE")) {
+                String clickItem = e.getCurrentItem().getType().toString();
+                if(clickItem.equalsIgnoreCase("GRASS_BLOCK") || clickItem.equalsIgnoreCase("NETHERRACK") || clickItem.equalsIgnoreCase("END_STONE")) {
                     world_name = ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName());
                     World world = Bukkit.getServer().getWorld(world_name);
                     setWorldSelected(world);
