@@ -15,6 +15,7 @@ Features
   100% compitable with all third parties plugin.
 
 Screenshots:
+
 ![Boolean Gamerule Example](https://user-images.githubusercontent.com/17084358/216966504-be8dfcee-e37b-4ec0-8ed5-948a325a3685.png)
 ![Copy Gamerules ](https://user-images.githubusercontent.com/17084358/216966507-12ba6440-f3a9-4cd2-9b35-4af7c844dd7f.png)
 ![Integer Gamerule Example](https://user-images.githubusercontent.com/17084358/216966512-d0c9987a-8ff6-44d5-84fd-781871ea5c2b.png)
