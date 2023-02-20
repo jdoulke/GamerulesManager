@@ -32,9 +32,9 @@ public class GUI {
         for(int i = 0; i < gamerules.length;i++){
             gamerulesSlots.put(gamerules[i],i);
         }
-        for (int i = 0; i < 36; i++) {
-                GameruleCreator creator = new GameruleCreator();
-                gui.setItem(i , creator.GamerulesCreator(gamerules[i], p.getWorld()));
+        for (int i = 0; i < gamerules.length && i < 36; i++) {
+            GameruleCreator creator = new GameruleCreator();
+            gui.setItem(i , creator.GamerulesCreator(gamerules[i], p.getWorld()));
         }
         gui.setItem(45, button.backButton());
         gui.setItem(48, button.copyButton(WorldSelected));
@@ -55,8 +55,7 @@ public class GUI {
         int guiSlot=0;
         for (int i = 36; i < gamerules.length; i++) {
             GameruleCreator creator = new GameruleCreator();
-            gui.setItem(guiSlot , creator.GamerulesCreator(gamerules[i], p.getWorld()));
-            guiSlot++;
+            gui.setItem(i , creator.GamerulesCreator(gamerules[i], p.getWorld()));
         }
 
         //buttons

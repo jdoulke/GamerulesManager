@@ -39,7 +39,7 @@ public final class GamerulesManager extends JavaPlugin {
             gamerulesDisplayItems.put(gamerule, displayItem.gameruleDisplayItem(gamerule.getName()));
         }
         //register command and listeners
-        Objects.requireNonNull(getCommand("ggamerule")).setExecutor(new GuiCommand());
+        Objects.requireNonNull(getCommand("gamerule")).setExecutor(new GuiCommand());
         getServer().getPluginManager().registerEvents(new GUIListener(), this);
         getServer().getPluginManager().registerEvents(new WorldSelectorListener(), this);
         //set the tab completer for gamerule command
