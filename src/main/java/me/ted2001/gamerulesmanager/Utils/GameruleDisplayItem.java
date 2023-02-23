@@ -8,10 +8,11 @@ public class GameruleDisplayItem {
     public ItemStack gameruleDisplayItem(String gamerule){
         switch (gamerule) {
             case "waterSourceConversion":
+            case "drowningDamage":
                 return new ItemStack(Material.WATER_BUCKET);
             case "universalAnger":
                 return new ItemStack(Material.SPIDER_EYE);
-            case "TNTExplosionDropDecay":
+            case "tntExplosionDropDecay":
                 return new ItemStack(Material.TNT);
             case "spectatorsGenerateChunks":
                 return new ItemStack(Material.ENDER_EYE);
@@ -55,8 +56,6 @@ public class GameruleDisplayItem {
                 return new ItemStack(Material.LAVA_BUCKET);
             case "fallDamage":
                 return new ItemStack(Material.DIAMOND_BOOTS);
-            case "drowningDamage":
-                return new ItemStack(Material.WATER_BUCKET);
             case "doWeatherCycle":
                 return new ItemStack(Material.SNOWBALL);
             case "doWardenSpawning":
@@ -69,6 +68,8 @@ public class GameruleDisplayItem {
                 return new ItemStack(Material.PILLAGER_SPAWN_EGG);
             case "doMobLoot":
                 return new ItemStack(Material.EXPERIENCE_BOTTLE);
+            case "doMobSpawning":
+                return new ItemStack(Material.ZOMBIE_SPAWN_EGG);
             case "doLimitedCrafting":
                 return new ItemStack(Material.CRAFTING_TABLE);
             case "doInsomnia":
