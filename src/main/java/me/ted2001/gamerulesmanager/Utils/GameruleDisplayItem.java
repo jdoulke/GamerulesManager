@@ -60,6 +60,8 @@ public class GameruleDisplayItem {
                 return new ItemStack(Material.SNOWBALL);
             case "doWardenSpawning":
                 return new ItemStack(Material.WARDEN_SPAWN_EGG);
+            case "doVinesSpread":
+                return new ItemStack(Material.VINE);
             case "doTraderSpawning":
                 return new ItemStack(Material.WANDERING_TRADER_SPAWN_EGG);
             case "doTileDrops":
@@ -88,6 +90,8 @@ public class GameruleDisplayItem {
                 return new ItemStack(Material.ELYTRA);
             case "commandBlockOutput":
                 return new ItemStack(Material.COMMAND_BLOCK);
+            case "commandModificationBlockLimit":
+                return new ItemStack(Material.REPEATING_COMMAND_BLOCK);
             case "blockExplosionDropDecay":
                 return new ItemStack(Material.FIRE_CHARGE);
             case "announceAdvancements":
