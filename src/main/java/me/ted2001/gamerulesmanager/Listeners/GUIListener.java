@@ -100,12 +100,8 @@ public class GUIListener implements Listener {
 
     private void valueReceiver(Player p, String gamerule) {
         World world = WorldSelected;
-        ItemStack paper = new ItemStack(Material.PAPER);
-        ItemMeta meta = paper.getItemMeta();
-        meta.setLore(Arrays.asList("Enter your value."));
-        paper.setItemMeta(meta);
         new AnvilGUI.Builder()
-                .itemLeft(paper)
+                .itemLeft(getItem())
                 .onClick((slot, stateSnapshot) -> {
                     String text = stateSnapshot.getText();
                     int value;
