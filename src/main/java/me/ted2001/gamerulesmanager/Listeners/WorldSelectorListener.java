@@ -10,6 +10,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
+import java.util.Objects;
+
 import static me.ted2001.gamerulesmanager.GamerulesManager.serverVersion;
 
 public class WorldSelectorListener implements Listener {
@@ -32,14 +34,15 @@ public class WorldSelectorListener implements Listener {
                 String world_name;
                 String clickItem = e.getCurrentItem().getType().toString();
                 if(clickItem.equalsIgnoreCase("GRASS_BLOCK") || clickItem.equalsIgnoreCase("NETHERRACK") || clickItem.equalsIgnoreCase("END_STONE")) {
-                    world_name = ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName());
+                    world_name = ChatColor.stripColor(Objects.requireNonNull(e.getCurrentItem().getItemMeta()).getDisplayName());
                     Bukkit.broadcastMessage("World: " + world_name);
                     World world = Bukkit.getServer().getWorld(world_name);
                     setWorldSelected(world);
                     p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_USE, 1, 1);
+                    assert world != null;
                     p.openInventory(GUI.gameruleSetterGui(p,world));
                 }
-                if(e.getCurrentItem().getItemMeta().getDisplayName().equals(ChatColor.RED + "EXIT")) {
+                if(Objects.requireNonNull(e.getCurrentItem().getItemMeta()).getDisplayName().equals(ChatColor.RED + "EXIT")) {
                     p.closeInventory();
                     if(Integer.parseInt(serverVersion) >= 14)
                         p.playSound(p.getLocation(), Sound.ENTITY_VILLAGER_CELEBRATE, 1,1);
@@ -48,6 +51,6 @@ public class WorldSelectorListener implements Listener {
                 }
 
             }
-        } catch (NullPointerException ex) {}
+        } catch (NullPointerException ignored) {}
     }
 }
