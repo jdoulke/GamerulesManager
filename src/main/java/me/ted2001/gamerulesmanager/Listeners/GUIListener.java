@@ -17,8 +17,10 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 
 import static me.ted2001.gamerulesmanager.GUI.*;
+import static me.ted2001.gamerulesmanager.GamerulesManager.getPlugin;
 import static me.ted2001.gamerulesmanager.GamerulesManager.serverVersion;
 import static me.ted2001.gamerulesmanager.Listeners.WorldSelectorListener.WorldSelected;
 
@@ -97,73 +99,82 @@ public class GUIListener implements Listener {
     }
 
     private void valueReceiver(Player p, String gamerule) {
-        World w = WorldSelected;
-        new AnvilGUI.Builder().onComplete((player, text) -> {
+        World world = WorldSelected;
+        ItemStack paper = new ItemStack(Material.PAPER);
+        ItemMeta meta = paper.getItemMeta();
+        meta.setLore(Arrays.asList("Enter your value."));
+        paper.setItemMeta(meta);
+        new AnvilGUI.Builder()
+                .itemLeft(paper)
+                .onClick((slot, stateSnapshot) -> {
+                    String text = stateSnapshot.getText();
                     int value;
                     try{
                         value = Integer.parseInt(text);
                     }catch (NumberFormatException ex){
-                        player.sendMessage(prefix + ChatColor.YELLOW + "You didn't type an " + ChatColor.RED + "integer number" + ChatColor.YELLOW +".");
+                        p.sendMessage(prefix + ChatColor.YELLOW + "You didn't type an " + ChatColor.RED + "integer number" + ChatColor.YELLOW +".");
                         p.playSound(p.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
-                        return AnvilGUI.Response.openInventory(GUI.gameruleSetterGui(p,WorldSelected));
+                        return Collections.singletonList(AnvilGUI.ResponseAction.openInventory(gameruleSetterGui(p, WorldSelected)));
                     }
                     switch (gamerule) {
                         case "randomTickSpeed":
-                            integerGameruleSetter(GameRule.RANDOM_TICK_SPEED, value, w, p);
-                            if(gamerulesSlots.get(gamerule) < 36)
-                                return AnvilGUI.Response.openInventory(GUI.gameruleSetterGui(p,WorldSelected));
+                            integerGameruleSetter(GameRule.RANDOM_TICK_SPEED, value, world, p);
+                            if(gamerulesSlots.get(gamerule) < 36) {
+                                Collections.singletonList(AnvilGUI.ResponseAction.close());
+                                return Collections.singletonList(AnvilGUI.ResponseAction.openInventory(gameruleSetterGui(p, WorldSelected)));
+                            }
                             else{
                                 gameruleSetterGuiPage2(p);
-                                return AnvilGUI.Response.openInventory(gameruleSetterGuiPage2);
+                                return Collections.singletonList(AnvilGUI.ResponseAction.openInventory(gameruleSetterGuiPage2));
                             }
                         case "spawnRadius":
-                            integerGameruleSetter(GameRule.SPAWN_RADIUS, value, w, p);
+                            integerGameruleSetter(GameRule.SPAWN_RADIUS, value, world, p);
                             if(gamerulesSlots.get(gamerule) < 36)
-                                return AnvilGUI.Response.openInventory(GUI.gameruleSetterGui(p,WorldSelected));
+                                return Collections.singletonList(AnvilGUI.ResponseAction.openInventory(gameruleSetterGui(p, WorldSelected)));
                             else{
                                 gameruleSetterGuiPage2(p);
-                                return AnvilGUI.Response.openInventory(gameruleSetterGuiPage2);
+                                return Collections.singletonList(AnvilGUI.ResponseAction.openInventory(gameruleSetterGuiPage2));
                             }
                         case "maxEntityCramming":
-                            integerGameruleSetter(GameRule.MAX_ENTITY_CRAMMING, value, w, p);
+                            integerGameruleSetter(GameRule.MAX_ENTITY_CRAMMING, value, world, p);
                             if(gamerulesSlots.get(gamerule) < 36)
-                                return AnvilGUI.Response.openInventory(GUI.gameruleSetterGui(p,WorldSelected));
+                                return Collections.singletonList(AnvilGUI.ResponseAction.openInventory(gameruleSetterGui(p, WorldSelected)));
                             else{
                                 gameruleSetterGuiPage2(p);
-                                return AnvilGUI.Response.openInventory(gameruleSetterGuiPage2);
+                                return Collections.singletonList(AnvilGUI.ResponseAction.openInventory(gameruleSetterGuiPage2));
                             }
                         case "maxCommandChainLength":
-                            integerGameruleSetter(GameRule.MAX_COMMAND_CHAIN_LENGTH, value, w, p);
+                            integerGameruleSetter(GameRule.MAX_COMMAND_CHAIN_LENGTH, value, world, p);
                             if(gamerulesSlots.get(gamerule) < 36)
-                                return AnvilGUI.Response.openInventory(GUI.gameruleSetterGui(p,WorldSelected));
+                                return Collections.singletonList(AnvilGUI.ResponseAction.openInventory(gameruleSetterGui(p, WorldSelected)));
                             else{
                                 gameruleSetterGuiPage2(p);
-                                return AnvilGUI.Response.openInventory(gameruleSetterGuiPage2);
+                                return Collections.singletonList(AnvilGUI.ResponseAction.openInventory(gameruleSetterGuiPage2));
                             }
                         case "playersSleepingPercentage":
-                            integerGameruleSetter(GameRule.PLAYERS_SLEEPING_PERCENTAGE, value, w, p);
+                            integerGameruleSetter(GameRule.PLAYERS_SLEEPING_PERCENTAGE, value, world, p);
                             if(gamerulesSlots.get(gamerule) < 36)
-                                return AnvilGUI.Response.openInventory(GUI.gameruleSetterGui(p,WorldSelected));
+                                return Collections.singletonList(AnvilGUI.ResponseAction.openInventory(gameruleSetterGui(p, WorldSelected)));
                             else{
                                 gameruleSetterGuiPage2(p);
-                                return AnvilGUI.Response.openInventory(gameruleSetterGuiPage2);
+                                return Collections.singletonList(AnvilGUI.ResponseAction.openInventory(gameruleSetterGuiPage2));
                             }
                         case "snowAccumulationHeight":
-                            integerGameruleSetter(GameRule.SNOW_ACCUMULATION_HEIGHT, value, w, p);
+                            integerGameruleSetter(GameRule.SNOW_ACCUMULATION_HEIGHT, value, world, p);
                             if(gamerulesSlots.get(gamerule) < 36)
-                                return AnvilGUI.Response.openInventory(GUI.gameruleSetterGui(p,WorldSelected));
+                                return Collections.singletonList(AnvilGUI.ResponseAction.openInventory(gameruleSetterGui(p, WorldSelected)));
                             else{
                                 gameruleSetterGuiPage2(p);
-                                return AnvilGUI.Response.openInventory(gameruleSetterGuiPage2);
+                                return Collections.singletonList(AnvilGUI.ResponseAction.openInventory(gameruleSetterGuiPage2));
                             }
                     }
                     return null;
                 })
                 .text("Read paper's info.")
-                .itemLeft(new ItemStack(getItem()))
                 .title("Enter your value.")
-                .plugin(GamerulesManager.getPlugin())
+                .plugin(getPlugin())
                 .open(p);
+
     }
 
 
