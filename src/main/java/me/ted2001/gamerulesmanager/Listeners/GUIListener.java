@@ -167,6 +167,14 @@ public class GUIListener implements Listener {
                                 gameruleSetterGuiPage2(p);
                                 return Collections.singletonList(AnvilGUI.ResponseAction.openInventory(gameruleSetterGuiPage2));
                             }
+                        case "commandModificationBlockLimit":
+                            integerGameruleSetter(GameRule.COMMAND_MODIFICATION_BLOCK_LIMIT, value, world, p);
+                            if(gamerulesSlots.get(gamerule) < 36)
+                                return Collections.singletonList(AnvilGUI.ResponseAction.openInventory(gameruleSetterGui(p, WorldSelected)));
+                            else{
+                                gameruleSetterGuiPage2(p);
+                                return Collections.singletonList(AnvilGUI.ResponseAction.openInventory(gameruleSetterGuiPage2));
+                            }
                     }
                     return null;
                 })
