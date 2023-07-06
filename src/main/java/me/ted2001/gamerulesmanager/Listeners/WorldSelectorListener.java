@@ -35,7 +35,6 @@ public class WorldSelectorListener implements Listener {
                 String clickItem = e.getCurrentItem().getType().toString();
                 if(clickItem.equalsIgnoreCase("GRASS_BLOCK") || clickItem.equalsIgnoreCase("NETHERRACK") || clickItem.equalsIgnoreCase("END_STONE")) {
                     world_name = ChatColor.stripColor(Objects.requireNonNull(e.getCurrentItem().getItemMeta()).getDisplayName());
-                    Bukkit.broadcastMessage("World: " + world_name);
                     World world = Bukkit.getServer().getWorld(world_name);
                     setWorldSelected(world);
                     p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_USE, 1, 1);
