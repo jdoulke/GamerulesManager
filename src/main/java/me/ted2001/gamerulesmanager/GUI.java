@@ -34,7 +34,7 @@ public class GUI {
         }
         for (int i = 0; i < gamerules.length && i < 36; i++) {
             GameruleCreator creator = new GameruleCreator();
-            gui.setItem(i , creator.GamerulesCreator(gamerules[i], p.getWorld()));
+            gui.setItem(i , creator.GamerulesCreator(gamerules[i], world));
         }
         gui.setItem(45, button.backButton());
         gui.setItem(48, button.copyButton(WorldSelected));

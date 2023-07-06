@@ -287,7 +287,6 @@ public class GUIListener implements Listener {
             }else{
                 p.sendMessage(prefix + ChatColor.RED + "" + ChatColor.BOLD +"You didn't copy any world.");
                 p.playSound(p.getLocation(), Sound.ENTITY_VILLAGER_NO, 1,1);
-                return;
             }
         }
     }

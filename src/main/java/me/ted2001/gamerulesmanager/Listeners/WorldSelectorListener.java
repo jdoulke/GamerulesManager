@@ -14,7 +14,7 @@ import static me.ted2001.gamerulesmanager.GamerulesManager.serverVersion;
 
 public class WorldSelectorListener implements Listener {
     public static World WorldSelected;
-    private GUI gui = new GUI();
+
 
 
     public void setWorldSelected(World worldSelected) {
@@ -33,10 +33,11 @@ public class WorldSelectorListener implements Listener {
                 String clickItem = e.getCurrentItem().getType().toString();
                 if(clickItem.equalsIgnoreCase("GRASS_BLOCK") || clickItem.equalsIgnoreCase("NETHERRACK") || clickItem.equalsIgnoreCase("END_STONE")) {
                     world_name = ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName());
+                    Bukkit.broadcastMessage("World: " + world_name);
                     World world = Bukkit.getServer().getWorld(world_name);
                     setWorldSelected(world);
                     p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_USE, 1, 1);
-                    p.openInventory(gui.gameruleSetterGui(p,world));
+                    p.openInventory(GUI.gameruleSetterGui(p,world));
                 }
                 if(e.getCurrentItem().getItemMeta().getDisplayName().equals(ChatColor.RED + "EXIT")) {
                     p.closeInventory();

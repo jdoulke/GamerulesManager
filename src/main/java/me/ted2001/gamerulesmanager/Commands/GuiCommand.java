@@ -13,7 +13,6 @@ import static me.ted2001.gamerulesmanager.GamerulesManager.serverVersion;
 import static me.ted2001.gamerulesmanager.GamerulesManager.getPlugin;
 
 public class GuiCommand implements CommandExecutor{
-    GUI gui = new GUI();
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
@@ -22,7 +21,7 @@ public class GuiCommand implements CommandExecutor{
             Player p = (Player) sender;
             if (args.length == 0) {
                 if (p.hasPermission("gamerulemanager.use")) {
-                    p.openInventory(gui.guiBuilder(p));
+                    p.openInventory(GUI.guiBuilder(p));
                     if (Integer.parseInt(serverVersion) >= 14)
                         p.playSound(p.getLocation(), Sound.ENTITY_VILLAGER_WORK_WEAPONSMITH, 1, 1);
                     else

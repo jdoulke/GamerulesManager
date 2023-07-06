@@ -16,7 +16,7 @@ import static me.ted2001.gamerulesmanager.GamerulesManager.getPlugin;
 
 public class GameruleCreator {
 
-    public ItemStack GamerulesCreator(String gamerule, World playerWorld){
+    public ItemStack GamerulesCreator(String gamerule, World selectedWorld){
 
         ArrayList<String> lore = new ArrayList<>();
         ItemStack item = gamerulesDisplayItems.get(GameRule.getByName(gamerule));
@@ -26,13 +26,13 @@ public class GameruleCreator {
         GameRule<?> tempGamerule = GameRule.getByName(gamerule);
         assert tempGamerule != null;
         if(tempGamerule.getType() == Boolean.class){
-            if(Boolean.TRUE.equals(playerWorld.getGameRuleValue(Objects.requireNonNull(GameRule.getByName(gamerule)))))
+            if(Boolean.TRUE.equals(selectedWorld.getGameRuleValue(Objects.requireNonNull(GameRule.getByName(gamerule)))))
                 lore.add(ChatColor.translateAlternateColorCodes('&', getPlugin().getConfig().getString("gameruleCondition") + ChatColor.GREEN + "" + ChatColor.BOLD + "True"));
 
             else
                 lore.add(ChatColor.translateAlternateColorCodes('&', getPlugin().getConfig().getString("gameruleCondition") + ChatColor.RED + "" + ChatColor.BOLD + "False"));
         }else
-            lore.add(ChatColor.translateAlternateColorCodes('&', getPlugin().getConfig().getString("gameruleCondition") + ChatColor.GREEN + "" + ChatColor.BOLD + playerWorld.getGameRuleValue(Objects.requireNonNull(GameRule.getByName(gamerule)))));
+            lore.add(ChatColor.translateAlternateColorCodes('&', getPlugin().getConfig().getString("gameruleCondition") + ChatColor.GREEN + "" + ChatColor.BOLD + selectedWorld.getGameRuleValue(Objects.requireNonNull(GameRule.getByName(gamerule)))));
         lore.add("");
 
         String remainingString = Objects.requireNonNull(getPlugin().getConfig().getString(gamerule));
@@ -41,7 +41,7 @@ public class GameruleCreator {
             lore.add(ChatColor.translateAlternateColorCodes('&', line));
 
         lore.add("");
-        lore.add(ChatColor.translateAlternateColorCodes('&', getPlugin().getConfig().getString("gameruleDefaultValue") + playerWorld.getGameRuleDefault(tempGamerule)));
+        lore.add(ChatColor.translateAlternateColorCodes('&', getPlugin().getConfig().getString("gameruleDefaultValue") + selectedWorld.getGameRuleDefault(tempGamerule)));
         itemMeta.setLore(lore);
         item.setItemMeta(itemMeta);
 
