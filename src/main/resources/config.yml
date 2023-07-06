@@ -9,7 +9,7 @@ copyGamerule: "&7Copy all gamerules values from world "
 #Paste Gamerules lore
 pasteGamerule: "&7Paste all gamerules values from the world you copied."
 #Check the list with minecraft gamerules here: https://minecraft.fandom.com/wiki/Game_rule#List_of_game_rules
-#You can use the '\n' for a new line but you have to color the text again.
+#You can use the '\n' for a new line, but you have to color the text again.
 announceAdvancements: "&7Whether advancements \n&7should be announced in chat."
 blockExplosionDropDecay: "&7Whether block loot is \n&7dropped by all blocks (false) or randomly (true)."
 commandBlockOutput: "&7Whether command blocks should \n&7 notify admins when they perform commands."
