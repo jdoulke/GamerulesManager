@@ -6,7 +6,7 @@
 
     <groupId>me.ted2001</groupId>
     <artifactId>GamerulesManager</artifactId>
-    <version>4.5.2</version>
+    <version>4.5.3</version>
     <packaging>jar</packaging>
 
     <name>Gamerules Manager</name>
