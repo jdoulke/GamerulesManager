@@ -46,7 +46,15 @@ public class GuiCommand implements CommandExecutor{
             }
             return false;
         }else {
-            sender.sendMessage(ChatColor.RED + "This command can only be executed from a player.");
+            if(args.length == 1){
+                if(args[0].equalsIgnoreCase("reload")){
+                    if(sender.hasPermission("gamerulemanager.reload")) {
+                        reloadCommand();
+                        sender.sendMessage(ChatColor.YELLOW + "You reload config.yml.");
+                    }
+                }
+            }else
+                sender.sendMessage(ChatColor.RED + "This command can only be executed from a player.");
         }
         return false;
     }
