@@ -9,7 +9,7 @@ copyGamerule: "&7Copy all gamerules values from world "
 #Paste Gamerules lore
 pasteGamerule: "&7Paste all gamerules values from the world you copied."
 #Plugin's prefix.
-pluginPrefix: "&b[&eUltimate Gamerules Manager&b]&7"
+pluginPrefix: "&b[&eUltimate Gamerules Manager&b] &7"
 #No permission message.
 noPermission: "&cYou don't have permission to use this command."
 #Gamerule not found message.
