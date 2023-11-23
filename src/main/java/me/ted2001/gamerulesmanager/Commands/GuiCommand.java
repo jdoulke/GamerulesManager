@@ -1,6 +1,7 @@
 package me.ted2001.gamerulesmanager.Commands;
 
 import me.ted2001.gamerulesmanager.GUI;
+import me.ted2001.gamerulesmanager.Utils.ColorUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
 import org.bukkit.command.Command;
@@ -8,6 +9,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Objects;
 
 import static me.ted2001.gamerulesmanager.GamerulesManager.serverVersion;
 import static me.ted2001.gamerulesmanager.GamerulesManager.getPlugin;
@@ -27,7 +30,7 @@ public class GuiCommand implements CommandExecutor{
                     else
                         p.playSound(p.getLocation(), Sound.ENTITY_VILLAGER_YES, 1, 1);
                 } else
-                    p.sendMessage(ChatColor.RED + "You don't have permission to use this command.");
+                    p.sendMessage(ColorUtils.translateColorCodes(Objects.requireNonNull(getPlugin().getConfig().getString("no-permission"))));
                 p.playSound(p.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
             } else if (args.length == 1) {
                 String arg0 = args[0];
@@ -37,7 +40,8 @@ public class GuiCommand implements CommandExecutor{
                         p.sendMessage(ChatColor.YELLOW + "You reload config.yml.");
                     }
                     else
-                        p.sendMessage(ChatColor.RED + "You don't have permission to use this command.");
+                        p.sendMessage(ColorUtils.translateColorCodes(Objects.requireNonNull(getPlugin().getConfig().getString("no-permission"))));
+
                 }
             }
             return false;
@@ -47,5 +51,9 @@ public class GuiCommand implements CommandExecutor{
         return false;
     }
 
-    private void reloadCommand(){ getPlugin().reloadConfig();}
+    private void reloadCommand(){
+
+        getPlugin().reloadConfig();
+        getPlugin().reloadPluginPrefix();
+    }
 }

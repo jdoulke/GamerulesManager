@@ -5,6 +5,7 @@ import me.ted2001.gamerulesmanager.Commands.GuiCommand;
 import me.ted2001.gamerulesmanager.Listeners.GUIListener;
 import me.ted2001.gamerulesmanager.Listeners.UpdateChecker;
 import me.ted2001.gamerulesmanager.Listeners.WorldSelectorListener;
+import me.ted2001.gamerulesmanager.Utils.ColorUtils;
 import me.ted2001.gamerulesmanager.Utils.GameruleDisplayItem;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
@@ -21,6 +22,7 @@ public final class GamerulesManager extends JavaPlugin {
     private static GamerulesManager plugin;
     public static String serverVersion;
     public static HashMap<GameRule<?>, ItemStack> gamerulesDisplayItems = new HashMap<>();
+    private String prefix;
 
     @Override
     public void onEnable() {
@@ -29,6 +31,8 @@ public final class GamerulesManager extends JavaPlugin {
         serverVersion = new String(new char[]{rawVersion.charAt(2), rawVersion.charAt(3)});
         //get instance of the plugin
         plugin = this;
+        //set plugin prefix
+        prefix = ColorUtils.translateColorCodes(Objects.requireNonNull(getPlugin().getConfig().getString("pluginPrefix"))) + " ";
         //get the config.yml
         getConfig().options().copyDefaults();
         saveDefaultConfig();
@@ -62,4 +66,13 @@ public final class GamerulesManager extends JavaPlugin {
         return plugin;
     }
 
+    public void reloadPluginPrefix() {
+
+        this.prefix = ColorUtils.translateColorCodes(Objects.requireNonNull(getPlugin().getConfig().getString("pluginPrefix"))) + " ";
+
+    }
+
+    public String getPluginPrefix() {
+        return prefix;
+    }
 }

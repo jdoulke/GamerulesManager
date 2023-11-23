@@ -37,9 +37,14 @@ public class WorldSelectorListener implements Listener {
                     world_name = ChatColor.stripColor(Objects.requireNonNull(e.getCurrentItem().getItemMeta()).getDisplayName());
                     World world = Bukkit.getServer().getWorld(world_name);
                     setWorldSelected(world);
-                    p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_USE, 1, 1);
-                    assert world != null;
-                    p.openInventory(GUI.gameruleSetterGui(p,world));
+                    if(world != null) {
+                        p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_USE, 1, 1);
+                        p.openInventory(GUI.gameruleSetterGui(p, world));
+                    }
+                    else {
+                        p.sendMessage(ChatColor.RED + "World not found.");
+                        p.playSound(p.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
+                    }
                 }
                 if(Objects.requireNonNull(e.getCurrentItem().getItemMeta()).getDisplayName().equals(ChatColor.RED + "EXIT")) {
                     p.closeInventory();

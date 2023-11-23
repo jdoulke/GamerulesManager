@@ -8,6 +8,12 @@ resetGamerule: "&7Reset all Gamerules to default values."
 copyGamerule: "&7Copy all gamerules values from world "
 #Paste Gamerules lore
 pasteGamerule: "&7Paste all gamerules values from the world you copied."
+#Plugin's prefix.
+pluginPrefix: "&b[&eUltimate Gamerules Manager&b]&7"
+#No permission message.
+noPermission: "&cYou don't have permission to use this command."
+#Gamerule not found message.
+gameruleNotFound: "&cGamerule description not found. Add description on config.yml file."
 #Check the list with minecraft gamerules here: https://minecraft.fandom.com/wiki/Game_rule#List_of_game_rules
 #You can use the '\n' for a new line, but you have to color the text again.
 announceAdvancements: "&7Whether advancements \n&7should be announced in chat."
