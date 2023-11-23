@@ -56,6 +56,8 @@ public class GameruleDisplayItem {
                 return new ItemStack(Material.LAVA_BUCKET);
             case "fallDamage":
                 return new ItemStack(Material.DIAMOND_BOOTS);
+            case "enderPearlsVanishOnDeath":
+                return new ItemStack(Material.ENDER_PEARL);
             case "doWeatherCycle":
                 return new ItemStack(Material.SNOWBALL);
             case "doWardenSpawning":

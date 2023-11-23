@@ -13,7 +13,7 @@ pluginPrefix: "&b[&eUltimate Gamerules Manager&b]&7"
 #No permission message.
 noPermission: "&cYou don't have permission to use this command."
 #Gamerule not found message.
-gameruleNotFound: "&cGamerule description not found. Add description on config.yml file."
+gameruleNotFound: "&cGamerule description and item not found. \n&cAdd description on config.yml file.\n&cItem will be added on the next update."
 #Check the list with minecraft gamerules here: https://minecraft.fandom.com/wiki/Game_rule#List_of_game_rules
 #You can use the '\n' for a new line, but you have to color the text again.
 announceAdvancements: "&7Whether advancements \n&7should be announced in chat."
@@ -37,6 +37,7 @@ doVinesSpread: "&7Whether vines can spread to other blocks.\n&7Cave vines, weepi
 doWardenSpawning: "&7Whether wardens can spawn."
 doWeatherCycle: "&7Whether the weather can change naturally."
 drowningDamage: "&7Whether the player should \n&7take damage when drowning."
+enderPearlsVanishOnDeath: "&7Controls whether thrown ender pearls \n&cvanish when the player dies."
 fallDamage: "&7Whether the player should take fall damage."
 fireDamage: "&7Whether the player should take \n&7damage in fire, lava, campfires,\n&7or on magma blocks."
 forgiveDeadPlayers: "&7Makes angered neutral mobs \n&7stop being angry when the \n&7targeted player dies nearby."
