@@ -37,7 +37,7 @@ doVinesSpread: "&7Whether vines can spread to other blocks.\n&7Cave vines, weepi
 doWardenSpawning: "&7Whether wardens can spawn."
 doWeatherCycle: "&7Whether the weather can change naturally."
 drowningDamage: "&7Whether the player should \n&7take damage when drowning."
-enderPearlsVanishOnDeath: "&7Controls whether thrown ender pearls \n&cvanish when the player dies."
+enderPearlsVanishOnDeath: "&7Controls whether thrown ender pearls \n&7vanish when the player dies."
 fallDamage: "&7Whether the player should take fall damage."
 fireDamage: "&7Whether the player should take \n&7damage in fire, lava, campfires,\n&7or on magma blocks."
 forgiveDeadPlayers: "&7Makes angered neutral mobs \n&7stop being angry when the \n&7targeted player dies nearby."
