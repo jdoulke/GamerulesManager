@@ -108,7 +108,7 @@ public class GUIListener implements Listener {
                     try{
                         value = Integer.parseInt(text);
                     }catch (NumberFormatException ex){
-                        p.sendMessage("getPlugin().getPluginPrefix()" + ChatColor.YELLOW + "You didn't type an " + ChatColor.RED + "integer number" + ChatColor.YELLOW +".");
+                        p.sendMessage(getPlugin().getPluginPrefix() + ChatColor.YELLOW + "You didn't type an " + ChatColor.RED + "integer number" + ChatColor.YELLOW +".");
                         p.playSound(p.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
                         return Collections.singletonList(AnvilGUI.ResponseAction.openInventory(gameruleSetterGui(p, WorldSelected)));
                     }
@@ -284,11 +284,11 @@ public class GUIListener implements Listener {
                 else
                     p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_USE, 1,1);
                 p.openInventory(GUI.gameruleSetterGui(p,selectedWorld));
-                p.sendMessage("getPlugin().getPluginPrefix()" + ChatColor.YELLOW +"You copied all " + ChatColor.AQUA + "Gamerules " +
+                p.sendMessage(getPlugin().getPluginPrefix() + ChatColor.YELLOW +"You copied all " + ChatColor.AQUA + "Gamerules " +
                         ChatColor.YELLOW +"from "  + ChatColor.BLUE + chosenWorld.getName()
                         + ChatColor.YELLOW + " to " + ChatColor.RED + WorldSelected.getName() + ChatColor.YELLOW + ".");
             }else{
-                p.sendMessage("getPlugin().getPluginPrefix()" + ChatColor.RED + "" + ChatColor.BOLD +"You didn't copy any world.");
+                p.sendMessage(getPlugin().getPluginPrefix() + ChatColor.RED + "" + ChatColor.BOLD +"You didn't copy any world.");
                 p.playSound(p.getLocation(), Sound.ENTITY_VILLAGER_NO, 1,1);
             }
         }
