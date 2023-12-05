@@ -138,8 +138,32 @@ public class GUIListener implements Listener {
                                 gameruleSetterGuiPage2(p);
                                 return Collections.singletonList(AnvilGUI.ResponseAction.openInventory(gameruleSetterGuiPage2));
                             }
+                        case "maxCommandForkCount":
+                            integerGameruleSetter(GameRule.MAX_COMMAND_FORK_COUNT, value, world, p);
+                            if(gamerulesSlots.get(gamerule) < 36)
+                                return Collections.singletonList(AnvilGUI.ResponseAction.openInventory(gameruleSetterGui(p, WorldSelected)));
+                            else{
+                                gameruleSetterGuiPage2(p);
+                                return Collections.singletonList(AnvilGUI.ResponseAction.openInventory(gameruleSetterGuiPage2));
+                            }
                         case "maxCommandChainLength":
                             integerGameruleSetter(GameRule.MAX_COMMAND_CHAIN_LENGTH, value, world, p);
+                            if(gamerulesSlots.get(gamerule) < 36)
+                                return Collections.singletonList(AnvilGUI.ResponseAction.openInventory(gameruleSetterGui(p, WorldSelected)));
+                            else{
+                                gameruleSetterGuiPage2(p);
+                                return Collections.singletonList(AnvilGUI.ResponseAction.openInventory(gameruleSetterGuiPage2));
+                            }
+                        case "playersNetherPortalCreativeDelay":
+                            integerGameruleSetter(GameRule.PLAYERS_NETHER_PORTAL_CREATIVE_DELAY, value, world, p);
+                            if(gamerulesSlots.get(gamerule) < 36)
+                                return Collections.singletonList(AnvilGUI.ResponseAction.openInventory(gameruleSetterGui(p, WorldSelected)));
+                            else{
+                                gameruleSetterGuiPage2(p);
+                                return Collections.singletonList(AnvilGUI.ResponseAction.openInventory(gameruleSetterGuiPage2));
+                            }
+                        case "playersNetherPortalDefaultDelay":
+                            integerGameruleSetter(GameRule.PLAYERS_NETHER_PORTAL_DEFAULT_DELAY, value, world, p);
                             if(gamerulesSlots.get(gamerule) < 36)
                                 return Collections.singletonList(AnvilGUI.ResponseAction.openInventory(gameruleSetterGui(p, WorldSelected)));
                             else{
