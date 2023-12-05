@@ -3,7 +3,7 @@ package me.ted2001.gamerulesmanager.Listeners;
 import me.ted2001.gamerulesmanager.GUI;
 
 
-import me.ted2001.gamerulesmanager.Utils.ColorUtils;
+
 import me.ted2001.gamerulesmanager.Utils.CopyGamerules;
 import me.ted2001.gamerulesmanager.Utils.GameruleCreator;
 import net.wesjd.anvilgui.AnvilGUI;
