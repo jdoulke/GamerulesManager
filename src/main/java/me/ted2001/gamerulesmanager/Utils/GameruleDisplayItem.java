@@ -80,7 +80,7 @@ public class GameruleDisplayItem {
             case "playersSleepingPercentage":
                 return new ItemStack(Material.WHITE_BED);
             case "projectilesCanBreakBlocks":
-                return new ItemStack(Material.TIPPED_ARROW);
+                return new ItemStack(Material.ARROW);
             case "randomTickSpeed":
                 return new ItemStack(Material.WHEAT);
             case "reducedDebugInfo":
