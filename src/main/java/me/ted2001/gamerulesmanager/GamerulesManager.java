@@ -51,11 +51,19 @@ public final class GamerulesManager extends JavaPlugin {
         Objects.requireNonNull(getPlugin().getCommand("gamerule")).setTabCompleter(tc);
         //create the update checker
         new UpdateChecker(this, 102215).getVersion(version -> {
-            if (this.getDescription().getVersion().equals(version)) {
-                getLogger().info("There is not a new update available.");
-            } else if (Integer.parseInt(this.getDescription().getVersion()) < Integer.parseInt(version)){
+            String currentVersion = this.getDescription().getVersion().replace(".", "");
+            version = version.replace(".", "");
+
+            int currentVersionInt = Integer.parseInt(currentVersion);
+            int newVersionInt = Integer.parseInt(version);
+
+            if(newVersionInt > currentVersionInt)
                 getLogger().info("There is a new update available.");
-            }
+             else if(newVersionInt == currentVersionInt)
+                getLogger().info("There is not a new update available.");
+            else
+                getLogger().info("You are running a dev version.");
+
         });
         //metrics for bstats for the plugin
         Metrics metrics = new Metrics(this,15346);
