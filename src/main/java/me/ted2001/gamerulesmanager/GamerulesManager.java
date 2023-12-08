@@ -53,7 +53,7 @@ public final class GamerulesManager extends JavaPlugin {
         new UpdateChecker(this, 102215).getVersion(version -> {
             if (this.getDescription().getVersion().equals(version)) {
                 getLogger().info("There is not a new update available.");
-            } else if (Double.parseDouble(this.getDescription().getVersion()) < Double.parseDouble(version)){
+            } else if (Integer.parseInt(this.getDescription().getVersion()) < Integer.parseInt(version)){
                 getLogger().info("There is a new update available.");
             }
         });
