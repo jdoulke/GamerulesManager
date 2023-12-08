@@ -59,7 +59,7 @@ public final class GamerulesManager extends JavaPlugin {
 
             if(newVersionInt > currentVersionInt)
                 getLogger().info("There is a new update available.");
-             else if(newVersionInt == currentVersionInt)
+            else if(newVersionInt == currentVersionInt)
                 getLogger().info("There is not a new update available.");
             else
                 getLogger().info("You are running a dev version.");
