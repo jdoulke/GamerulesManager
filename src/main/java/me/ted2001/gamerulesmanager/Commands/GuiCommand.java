@@ -62,6 +62,6 @@ public class GuiCommand implements CommandExecutor{
     private void reloadCommand(){
 
         getPlugin().reloadConfig();
-        getPlugin().reloadPluginPrefix();
+        getPlugin().reloadPlugin();
     }
 }

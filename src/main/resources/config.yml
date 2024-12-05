@@ -13,7 +13,7 @@ pluginPrefix: "&b[&eUltimate Gamerules Manager&b] &7"
 #No permission message.
 noPermission: "&cYou don't have permission to use this command."
 #Gamerule not found message.
-gameruleNotFound: "&cGamerule description and item not found. \n&cAdd description on config.yml file.\n&cItem will be added on the next update."
+gameruleNotFound: "&cGamerule description and item not found. \n&cAdd description αnd item on config.yml file."
 #Check the list with minecraft gamerules here: https://minecraft.fandom.com/wiki/Game_rule#List_of_game_rules
 #You can use the '\n' for a new line, but you have to color the text again.
 announceAdvancements: "&7Whether advancements \n&7should be announced in chat."
@@ -21,6 +21,7 @@ blockExplosionDropDecay: "&7Whether block loot is \n&7dropped by all blocks (fal
 commandBlockOutput: "&7Whether command blocks should \n&7 notify admins when they perform commands."
 commandModificationBlockLimit: "&7Controls the maximum number of blocks \n&7changed when using /clone, /fill, or /fillbiome."
 disableElytraMovementCheck: "&7Whether the server should skip checking \n&7player speed when the player is wearing elytra."
+disablePlayerMovementCheck: "&7Whether the server should skip checking player speed."
 disableRaids: "&7Whether raids are disabled."
 doDaylightCycle: "&7Whether the daylight cycle \n&7and moon phases progress."
 doEntityDrops: "&7Whether entities that are \n&7not mobs should have drops."
@@ -62,7 +63,65 @@ sendCommandFeedback: "&7Whether the feedback from commands \n&7executed by a pla
 showDeathMessages: "&7Whether death messages are put \n&7into chat when a player dies."
 snowAccumulationHeight: "&7The maximum number of snow layers \n&7that can be accumulated on each block."
 spawnRadius: "&7The number of blocks from the world spawn \n&7that a player spawns in \n&7when first joining a server."
+spawnChunkRadius: "&7Set the size of the spawn chunks. \n&7Possible values are 0 to 32, where 0 completely disables the spawn chunks."
 spectatorsGenerateChunks: "&7Whether players in spectator mode\n&7can generate chunks."
 tntExplosionDropDecay: "&7Whether block loot is dropped \n&7by all blocks (false) or randomly (true)."
 universalAnger: "&7Makes angered neutral mobs attack any nearby player."
 waterSourceConversion: "&7Whether new sources of water are allowed to form."
+
+#Set gamerules items. If the item is not found, book will be used.
+gameruleItems:
+  announceAdvancements: BOOK
+  blockExplosionDropDecay: FIRE_CHARGE
+  commandBlockOutput: COMMAND_BLOCK
+  commandModificationBlockLimit: REPEATING_COMMAND_BLOCK
+  disableElytraMovementCheck: ELYTRA
+  disablePlayerMovementCheck: PLAYER_HEAD
+  disableRaids: CROSSBOW
+  doDaylightCycle: CLOCK
+  doEntityDrops: ROTTEN_FLESH
+  doFireTick: FLINT_AND_STEEL
+  doImmediateRespawn: TOTEM_OF_UNDYING
+  doInsomnia: PHANTOM_SPAWN_EGG
+  doLimitedCrafting: CRAFTING_TABLE
+  doMobLoot: EXPERIENCE_BOTTLE
+  doMobSpawning: ZOMBIE_SPAWN_EGG
+  doPatrolSpawning: PILLAGER_SPAWN_EGG
+  doTileDrops: OAK_LOG
+  doTraderSpawning: WANDERING_TRADER_SPAWN_EGG
+  doVinesSpread: VINE
+  doWardenSpawning: WARDEN_SPAWN_EGG
+  doWeatherCycle: SNOWBALL
+  drowningDamage: WATER_BUCKET
+  enderPearlsVanishOnDeath: ENDER_PEARL
+  fallDamage: DIAMOND_BOOTS
+  fireDamage: LAVA_BUCKET
+  forgiveDeadPlayers: FEATHER
+  freezeDamage: BLUE_ICE
+  globalSoundEvents: NOTE_BLOCK
+  keepInventory: DIAMOND_SWORD
+  lavaSourceConversion: LAVA_BUCKET
+  logAdminCommands: WRITABLE_BOOK
+  maxCommandChainLength: CHAIN_COMMAND_BLOCK
+  maxCommandForkCount: CHAIN_COMMAND_BLOCK
+  maxEntityCramming: ZOMBIE_HEAD
+  mobExplosionDropDecay: CREEPER_SPAWN_EGG
+  mobGriefing: OAK_DOOR
+  naturalRegeneration: GOLDEN_APPLE
+  playersNetherPortalCreativeDelay: CRYING_OBSIDIAN
+  playersNetherPortalDefaultDelay: OBSIDIAN
+  playersSleepingPercentage: WHITE_BED
+  projectilesCanBreakBlocks: ARROW
+  randomTickSpeed: WHEAT
+  reducedDebugInfo: REDSTONE_TORCH
+  sendCommandFeedback: REDSTONE_LAMP
+  showDeathMessages: PAPER
+  snowAccumulationHeight: SNOW_BLOCK
+  spawnChunkRadius: GRASS_BLOCK
+  spawnRadius: RED_BED
+  spectatorsGenerateChunks: ENDER_EYE
+  tntExplosionDropDecay: TNT
+  universalAnger: SPIDER_EYE
+  waterSourceConversion: WATER_BUCKET
+
+

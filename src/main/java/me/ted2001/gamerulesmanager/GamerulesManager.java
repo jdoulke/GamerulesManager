@@ -74,9 +74,16 @@ public final class GamerulesManager extends JavaPlugin {
         return plugin;
     }
 
-    public void reloadPluginPrefix() {
+    public void reloadPlugin() {
 
         this.prefix = ColorUtils.translateColorCodes(Objects.requireNonNull(getPlugin().getConfig().getString("pluginPrefix"))) + " ";
+        gamerulesDisplayItems.clear();
+
+        GameRule<?>[] gamerules = GameRule.values();
+        GameruleDisplayItem displayItem = new GameruleDisplayItem();
+        for (GameRule<?> gamerule : gamerules) {
+            gamerulesDisplayItems.put(gamerule, displayItem.gameruleDisplayItem(gamerule.getName()));
+        }
 
     }
 
