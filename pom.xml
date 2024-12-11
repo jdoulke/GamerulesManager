@@ -6,7 +6,7 @@
 
     <groupId>me.ted2001</groupId>
     <artifactId>GamerulesManager</artifactId>
-    <version>4.5.4</version>
+    <version>4.5.5</version>
     <packaging>jar</packaging>
 
     <name>Gamerules Manager</name>
@@ -95,7 +95,7 @@
         <dependency>
             <groupId>net.wesjd</groupId>
             <artifactId>anvilgui</artifactId>
-            <version>1.10.3-SNAPSHOT</version>
+            <version>1.10.4-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.bstats</groupId>
