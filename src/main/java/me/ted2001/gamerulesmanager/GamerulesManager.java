@@ -31,11 +31,11 @@ public final class GamerulesManager extends JavaPlugin {
         serverVersion = new String(new char[]{rawVersion.charAt(2), rawVersion.charAt(3)});
         //get instance of the plugin
         plugin = this;
+        //get the config.yml
+        saveDefaultConfig();
+        reloadConfig();
         //set plugin prefix
         prefix = ColorUtils.translateColorCodes(Objects.requireNonNull(getPlugin().getConfig().getString("pluginPrefix"))) + " ";
-        //get the config.yml
-        getConfig().options().copyDefaults();
-        saveDefaultConfig();
         //set gamerules display items
         GameRule<?>[] gamerules = GameRule.values();
         GameruleDisplayItem displayItem = new GameruleDisplayItem();

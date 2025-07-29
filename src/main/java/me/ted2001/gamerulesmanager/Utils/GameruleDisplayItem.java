@@ -12,9 +12,9 @@ public class GameruleDisplayItem {
     public ItemStack gameruleDisplayItem(String gamerule) {
         String materialName = config.getString("gameruleItems." + gamerule, "BOOK");
         Material material = Material.matchMaterial(materialName);
-        if (material == null) {
+        if (material == null)
             material = Material.BOOK; // Default material if invalid
-        }
+
         return new ItemStack(material);
     }
 }
