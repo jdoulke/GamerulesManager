@@ -16,6 +16,7 @@ noPermission: "&cYou don't have permission to use this command."
 gameruleNotFound: "&cGamerule description and item not found. \n&cAdd description αnd item on config.yml file."
 #Check the list with minecraft gamerules here: https://minecraft.fandom.com/wiki/Game_rule#List_of_game_rules
 #You can use the '\n' for a new line, but you have to color the text again.
+allowFireTicksAwayFromPlayer: "&7Whether fire and lava ticks can occur \n&7outside of an 8 chunk range of a player."
 announceAdvancements: "&7Whether advancements \n&7should be announced in chat."
 blockExplosionDropDecay: "&7Whether block loot is \n&7dropped by all blocks (false) or randomly (true)."
 commandBlockOutput: "&7Whether command blocks should \n&7 notify admins when they perform commands."
@@ -46,6 +47,7 @@ freezeDamage: "&7Whether the player should take \n&7damage when inside powder sn
 globalSoundEvents: "&7Whether certain sound events \n&7are heard by all players \n&7regardless of location."
 keepInventory: "&7Whether the player should keep items \n&7and experience in their inventory after death."
 lavaSourceConversion: "&7Whether new sources of lava are allowed to form."
+locatorBar: "&7A UI element on the player HUD that displays \n&7the direction of other players in the world.\n&7It is displayed in place of the experience bar."
 logAdminCommands: "&7Whether to log admin commands to server log."
 maxCommandChainLength: "&7The maximum length of a chain of commands \n&7that can be executed during one tick."
 maxCommandForkCount: "&7The maximum number of forks (contexts)\n&7that can be created during one tick.\n&7Applies to command blocks and functions."
@@ -66,11 +68,13 @@ spawnRadius: "&7The number of blocks from the world spawn \n&7that a player spaw
 spawnChunkRadius: "&7Set the size of the spawn chunks. \n&7Possible values are 0 to 32, where 0 completely disables the spawn chunks."
 spectatorsGenerateChunks: "&7Whether players in spectator mode\n&7can generate chunks."
 tntExplosionDropDecay: "&7Whether block loot is dropped \n&7by all blocks (false) or randomly (true)."
+tntExplodes: "&7Whether TNT explodes after activation."
 universalAnger: "&7Makes angered neutral mobs attack any nearby player."
 waterSourceConversion: "&7Whether new sources of water are allowed to form."
 
 #Set gamerules items. If the item is not found, book will be used.
 gameruleItems:
+  allowFireTicksAwayFromPlayer: CAMPFIRE
   announceAdvancements: BOOK
   blockExplosionDropDecay: FIRE_CHARGE
   commandBlockOutput: COMMAND_BLOCK
@@ -101,6 +105,7 @@ gameruleItems:
   globalSoundEvents: NOTE_BLOCK
   keepInventory: DIAMOND_SWORD
   lavaSourceConversion: LAVA_BUCKET
+  locatorBar: COMPASS
   logAdminCommands: WRITABLE_BOOK
   maxCommandChainLength: CHAIN_COMMAND_BLOCK
   maxCommandForkCount: CHAIN_COMMAND_BLOCK
@@ -120,8 +125,7 @@ gameruleItems:
   spawnChunkRadius: GRASS_BLOCK
   spawnRadius: RED_BED
   spectatorsGenerateChunks: ENDER_EYE
-  tntExplosionDropDecay: TNT
+  tntExplodes: TNT
+  tntExplosionDropDecay: TNT_MINECART
   universalAnger: SPIDER_EYE
   waterSourceConversion: WATER_BUCKET
-
-
