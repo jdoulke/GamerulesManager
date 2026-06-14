@@ -1,131 +1,208 @@
-#Here change the value for Gamerule's condition.
+# Here change the value for Gamerule's condition.
 gameruleCondition: "&7Gamerule is currently set to: "
-#Here change the default value message.
-gameruleDefaultValue: "&7Default value is: "
-#Reset Gamerules lore
-resetGamerule: "&7Reset all Gamerules to default values."
-#Copy Gamerules lore
-copyGamerule: "&7Copy all gamerules values from world "
-#Paste Gamerules lore
-pasteGamerule: "&7Paste all gamerules values from the world you copied."
-#Plugin's prefix.
-pluginPrefix: "&b[&eUltimate Gamerules Manager&b] &7"
-#No permission message.
-noPermission: "&cYou don't have permission to use this command."
-#Gamerule not found message.
-gameruleNotFound: "&cGamerule description and item not found. \n&cAdd description αnd item on config.yml file."
-#Check the list with minecraft gamerules here: https://minecraft.fandom.com/wiki/Game_rule#List_of_game_rules
-#You can use the '\n' for a new line, but you have to color the text again.
-allowFireTicksAwayFromPlayer: "&7Whether fire and lava ticks can occur \n&7outside of an 8 chunk range of a player."
-announceAdvancements: "&7Whether advancements \n&7should be announced in chat."
-blockExplosionDropDecay: "&7Whether block loot is \n&7dropped by all blocks (false) or randomly (true)."
-commandBlockOutput: "&7Whether command blocks should \n&7 notify admins when they perform commands."
-commandModificationBlockLimit: "&7Controls the maximum number of blocks \n&7changed when using /clone, /fill, or /fillbiome."
-disableElytraMovementCheck: "&7Whether the server should skip checking \n&7player speed when the player is wearing elytra."
-disablePlayerMovementCheck: "&7Whether the server should skip checking player speed."
-disableRaids: "&7Whether raids are disabled."
-doDaylightCycle: "&7Whether the daylight cycle \n&7and moon phases progress."
-doEntityDrops: "&7Whether entities that are \n&7not mobs should have drops."
-doFireTick: "&7Whether fire should spread \n&7and naturally extinguish."
-doInsomnia: "&7Whether phantoms can \n&7spawn in the nighttime."
-doImmediateRespawn: "&7Players respawn immediately \n&7without showing the death screen."
-doLimitedCrafting: "&7Whether players should be able\n&7 to craft only those recipes that \n&7they've unlocked first."
-doMobLoot: "&7Whether mobs should drop items \n&7and experience orbs."
-doMobSpawning: "&7Whether mobs should naturally spawn.\n&7Does not affect monster spawners."
-doPatrolSpawning: "&7Whether patrols can spawn."
-doTileDrops: "&7Whether blocks should have drops."
-doTraderSpawning: "&7Whether wandering traders can spawn."
-doVinesSpread: "&7Whether vines can spread to other blocks.\n&7Cave vines, weeping vines, \n&7and twisting vines are not affected."
-doWardenSpawning: "&7Whether wardens can spawn."
-doWeatherCycle: "&7Whether the weather can change naturally."
-drowningDamage: "&7Whether the player should \n&7take damage when drowning."
-enderPearlsVanishOnDeath: "&7Controls whether thrown ender pearls \n&7vanish when the player dies."
-fallDamage: "&7Whether the player should take fall damage."
-fireDamage: "&7Whether the player should take \n&7damage in fire, lava, campfires,\n&7or on magma blocks."
-forgiveDeadPlayers: "&7Makes angered neutral mobs \n&7stop being angry when the \n&7targeted player dies nearby."
-freezeDamage: "&7Whether the player should take \n&7damage when inside powder snow."
-globalSoundEvents: "&7Whether certain sound events \n&7are heard by all players \n&7regardless of location."
-keepInventory: "&7Whether the player should keep items \n&7and experience in their inventory after death."
-lavaSourceConversion: "&7Whether new sources of lava are allowed to form."
-locatorBar: "&7A UI element on the player HUD that displays \n&7the direction of other players in the world.\n&7It is displayed in place of the experience bar."
-logAdminCommands: "&7Whether to log admin commands to server log."
-maxCommandChainLength: "&7The maximum length of a chain of commands \n&7that can be executed during one tick."
-maxCommandForkCount: "&7The maximum number of forks (contexts)\n&7that can be created during one tick.\n&7Applies to command blocks and functions."
-maxEntityCramming: "&7The maximum number of pushable entities \n&7a player can push before \n&7taking 3 suffocation damage."
-mobExplosionDropDecay: "&7Whether block loot is dropped by \n&7all blocks (false) or randomly (true)."
-mobGriefing: "&7Whether mobs can pick up items \n&7and be able to change blocks."
-naturalRegeneration: "&7Whether the player can regenerate health \n&7naturally if their hunger is full enough."
-playersNetherPortalCreativeDelay: "&7Controls the time that a creative player needs\n&7to stand in a nether portal before changing dimensions."
-playersNetherPortalDefaultDelay: "&7Controls the time that a non-creative player needs \n&7to stand in a nether portal before changing dimensions."
-playersSleepingPercentage: "&7What percentage of players must \n&7sleep to skip the night."
-projectilesCanBreakBlocks: "&7Whether impact projectiles destroy blocks that are\n&7 destructible by them, i.e. chorus flowers,\n&7pointed dripstone, and decorated pots."
-randomTickSpeed: "&7How often a random block tick \n&7occurs such as plant growth \n&7per chunk section per game tick."
-reducedDebugInfo: "&7Whether the debug screen shows \n&7all or reduced information."
-sendCommandFeedback: "&7Whether the feedback from commands \n&7executed by a player should show up in chat."
-showDeathMessages: "&7Whether death messages are put \n&7into chat when a player dies."
-snowAccumulationHeight: "&7The maximum number of snow layers \n&7that can be accumulated on each block."
-spawnRadius: "&7The number of blocks from the world spawn \n&7that a player spawns in \n&7when first joining a server."
-spawnChunkRadius: "&7Set the size of the spawn chunks. \n&7Possible values are 0 to 32, where 0 completely disables the spawn chunks."
-spectatorsGenerateChunks: "&7Whether players in spectator mode\n&7can generate chunks."
-tntExplosionDropDecay: "&7Whether block loot is dropped \n&7by all blocks (false) or randomly (true)."
-tntExplodes: "&7Whether TNT explodes after activation."
-universalAnger: "&7Makes angered neutral mobs attack any nearby player."
-waterSourceConversion: "&7Whether new sources of water are allowed to form."
 
-#Set gamerules items. If the item is not found, book will be used.
+# Here change the default value message.
+gameruleDefaultValue: "&7Default value is: "
+
+# Reset Gamerules lore.
+resetGamerule: "&7Reset all Gamerules to default values."
+
+# Copy Gamerules lore.
+copyGamerule: "&7Copy all gamerules values from world "
+
+# Paste Gamerules lore.
+pasteGamerule: "&7Paste all gamerules values from the world you copied."
+
+# Plugin's prefix.
+pluginPrefix: "&b[&eUltimate Gamerules Manager&b] &7"
+
+# No permission message.
+noPermission: "&cYou don't have permission to use this command."
+
+# Gamerule not found message.
+gameruleNotFound: "&cGamerule description and item not found.\n&cAdd description and item on config.yml file."
+
+# Minecraft 26.x / Java 25 gamerule keys.
+# Gamerules are now namespaced snake_case IDs, e.g. minecraft:freeze_damage.
+# In this config we store them without the minecraft: prefix.
+
+advance_time: "&7Whether the daylight cycle and moon phases progress."
+
+advance_weather: "&7Whether the weather can change naturally."
+
+allow_entering_nether_using_portals: "&7Whether players can enter the Nether using Nether portals."
+
+block_drops: "&7Whether blocks should drop items when broken."
+
+block_explosion_drop_decay: "&7Whether blocks destroyed by explosions drop all loot or decay randomly."
+
+command_block_output: "&7Whether command blocks should notify admins when they perform commands."
+
+command_blocks_work: "&7Whether command blocks are enabled and can run commands."
+
+drowning_damage: "&7Whether players should take damage when drowning."
+
+ender_pearls_vanish_on_death: "&7Whether thrown ender pearls vanish when the player dies."
+
+entity_drops: "&7Whether entities that are not mobs should drop items."
+
+elytra_movement_check: "&7Whether the server should check player movement while flying with elytra."
+
+fall_damage: "&7Whether players should take fall damage."
+
+fire_damage: "&7Whether players should take damage from fire, lava, campfires, or magma blocks."
+
+fire_spread_radius_around_player: "&7Controls the maximum distance in blocks that fire can spread around a player.\n&7Set to 0 to disable fire spreading.\n&7Set to -1 to allow fire spreading without players nearby."
+
+forgive_dead_players: "&7Whether angered neutral mobs stop being angry when the targeted player dies nearby."
+
+freeze_damage: "&7Whether players should take damage when freezing in powder snow."
+
+global_sound_events: "&7Whether certain sound events are heard by all players regardless of location."
+
+immediate_respawn: "&7Whether players respawn immediately without showing the death screen."
+
+keep_inventory: "&7Whether players keep their items and experience after death."
+
+lava_source_conversion: "&7Whether new sources of lava are allowed to form."
+
+limited_crafting: "&7Whether players can only craft recipes they have unlocked."
+
+locator_bar: "&7Whether the locator bar is shown on the player HUD."
+
+log_admin_commands: "&7Whether admin commands are logged to the server log."
+
+max_block_modifications: "&7The maximum number of blocks that can be changed by commands like /clone, /fill, or /fillbiome."
+
+max_command_forks: "&7The maximum number of command forks that can be created during one tick."
+
+max_command_sequence_length: "&7The maximum length of a chain of commands that can be executed during one tick."
+
+max_entity_cramming: "&7The maximum number of pushable entities that can occupy one space before taking suffocation damage."
+
+max_minecart_speed: "&7The maximum speed minecarts are allowed to reach."
+
+max_snow_accumulation_height: "&7The maximum number of snow layers that can accumulate on each block."
+
+mob_drops: "&7Whether mobs should drop items and experience orbs."
+
+mob_explosion_drop_decay: "&7Whether blocks destroyed by mob explosions drop all loot or decay randomly."
+
+mob_griefing: "&7Whether mobs can pick up items or change blocks."
+
+natural_health_regeneration: "&7Whether players can regenerate health naturally when their hunger is full enough."
+
+player_movement_check: "&7Whether the server should check normal player movement."
+
+players_nether_portal_creative_delay: "&7Controls how long a creative player must stand in a Nether portal before changing dimensions."
+
+players_nether_portal_default_delay: "&7Controls how long a non-creative player must stand in a Nether portal before changing dimensions."
+
+players_sleeping_percentage: "&7The percentage of players that must sleep to skip the night."
+
+projectiles_can_break_blocks: "&7Whether impact projectiles can destroy blocks that are destructible by them."
+
+pvp: "&7Whether players can damage each other."
+
+raids: "&7Whether raids can occur."
+
+random_tick_speed: "&7How often random block ticks occur, such as crop growth and leaf decay."
+
+reduced_debug_info: "&7Whether the debug screen shows reduced information."
+
+respawn_radius: "&7The number of blocks around the world spawn where players can respawn."
+
+send_command_feedback: "&7Whether command feedback should be shown in chat."
+
+show_advancement_messages: "&7Whether advancement messages should be announced in chat."
+
+show_death_messages: "&7Whether death messages are shown in chat."
+
+spawn_mobs: "&7Whether mobs can naturally spawn.\n&7Does not affect monster spawners."
+
+spawn_monsters: "&7Whether monsters can naturally spawn."
+
+spawn_patrols: "&7Whether patrols can spawn."
+
+spawn_phantoms: "&7Whether phantoms can spawn during the night."
+
+spawn_wandering_traders: "&7Whether wandering traders can spawn."
+
+spawn_wardens: "&7Whether wardens can spawn."
+
+spawner_blocks_work: "&7Whether monster spawner blocks are enabled."
+
+spectators_generate_chunks: "&7Whether players in spectator mode can generate chunks."
+
+spread_vines: "&7Whether vines can spread to other blocks.\n&7Cave vines, weeping vines, and twisting vines are not affected."
+
+tnt_explodes: "&7Whether TNT explodes after activation."
+
+tnt_explosion_drop_decay: "&7Whether blocks destroyed by TNT explosions drop all loot or decay randomly."
+
+universal_anger: "&7Whether angered neutral mobs attack any nearby player."
+
+water_source_conversion: "&7Whether new sources of water are allowed to form."
+
+# Set gamerules items.
+# If the item is not found, BOOK will be used.
 gameruleItems:
-  allowFireTicksAwayFromPlayer: CAMPFIRE
-  announceAdvancements: BOOK
-  blockExplosionDropDecay: FIRE_CHARGE
-  commandBlockOutput: COMMAND_BLOCK
-  commandModificationBlockLimit: REPEATING_COMMAND_BLOCK
-  disableElytraMovementCheck: ELYTRA
-  disablePlayerMovementCheck: PLAYER_HEAD
-  disableRaids: CROSSBOW
-  doDaylightCycle: CLOCK
-  doEntityDrops: ROTTEN_FLESH
-  doFireTick: FLINT_AND_STEEL
-  doImmediateRespawn: TOTEM_OF_UNDYING
-  doInsomnia: PHANTOM_SPAWN_EGG
-  doLimitedCrafting: CRAFTING_TABLE
-  doMobLoot: EXPERIENCE_BOTTLE
-  doMobSpawning: ZOMBIE_SPAWN_EGG
-  doPatrolSpawning: PILLAGER_SPAWN_EGG
-  doTileDrops: OAK_LOG
-  doTraderSpawning: WANDERING_TRADER_SPAWN_EGG
-  doVinesSpread: VINE
-  doWardenSpawning: WARDEN_SPAWN_EGG
-  doWeatherCycle: SNOWBALL
-  drowningDamage: WATER_BUCKET
-  enderPearlsVanishOnDeath: ENDER_PEARL
-  fallDamage: DIAMOND_BOOTS
-  fireDamage: LAVA_BUCKET
-  forgiveDeadPlayers: FEATHER
-  freezeDamage: BLUE_ICE
-  globalSoundEvents: NOTE_BLOCK
-  keepInventory: DIAMOND_SWORD
-  lavaSourceConversion: LAVA_BUCKET
-  locatorBar: COMPASS
-  logAdminCommands: WRITABLE_BOOK
-  maxCommandChainLength: CHAIN_COMMAND_BLOCK
-  maxCommandForkCount: CHAIN_COMMAND_BLOCK
-  maxEntityCramming: ZOMBIE_HEAD
-  mobExplosionDropDecay: CREEPER_SPAWN_EGG
-  mobGriefing: OAK_DOOR
-  naturalRegeneration: GOLDEN_APPLE
-  playersNetherPortalCreativeDelay: CRYING_OBSIDIAN
-  playersNetherPortalDefaultDelay: OBSIDIAN
-  playersSleepingPercentage: WHITE_BED
-  projectilesCanBreakBlocks: ARROW
-  randomTickSpeed: WHEAT
-  reducedDebugInfo: REDSTONE_TORCH
-  sendCommandFeedback: REDSTONE_LAMP
-  showDeathMessages: PAPER
-  snowAccumulationHeight: SNOW_BLOCK
-  spawnChunkRadius: GRASS_BLOCK
-  spawnRadius: RED_BED
-  spectatorsGenerateChunks: ENDER_EYE
-  tntExplodes: TNT
-  tntExplosionDropDecay: TNT_MINECART
-  universalAnger: SPIDER_EYE
-  waterSourceConversion: WATER_BUCKET
+  advance_time: CLOCK
+  advance_weather: SNOWBALL
+  allow_entering_nether_using_portals: OBSIDIAN
+  block_drops: OAK_LOG
+  block_explosion_drop_decay: FIRE_CHARGE
+  command_block_output: COMMAND_BLOCK
+  command_blocks_work:
+  drowning_damage: WATER_BUCKET
+  ender_pearls_vanish_on_death: ENDER_PEARL
+  entity_drops: ROTTEN_FLESH
+  elytra_movement_check: ELYTRA
+  fall_damage: DIAMOND_BOOTS
+  fire_damage: LAVA_BUCKET
+  fire_spread_radius_around_player: FLINT_AND_STEEL
+  forgive_dead_players: FEATHER
+  freeze_damage: BLUE_ICE
+  global_sound_events: NOTE_BLOCK
+  immediate_respawn: TOTEM_OF_UNDYING
+  keep_inventory: DIAMOND_SWORD
+  lava_source_conversion: LAVA_BUCKET
+  limited_crafting: CRAFTING_TABLE
+  locator_bar: COMPASS
+  log_admin_commands: WRITABLE_BOOK
+  max_block_modifications: REPEATING_COMMAND_BLOCK
+  max_command_forks: CHAIN_COMMAND_BLOCK
+  max_command_sequence_length: CHAIN_COMMAND_BLOCK
+  max_entity_cramming: ZOMBIE_HEAD
+  max_minecart_speed: MINECART
+  max_snow_accumulation_height: SNOW_BLOCK
+  mob_drops: EXPERIENCE_BOTTLE
+  mob_explosion_drop_decay: CREEPER_SPAWN_EGG
+  mob_griefing: OAK_DOOR
+  natural_health_regeneration: GOLDEN_APPLE
+  player_movement_check: PLAYER_HEAD
+  players_nether_portal_creative_delay: CRYING_OBSIDIAN
+  players_nether_portal_default_delay: OBSIDIAN
+  players_sleeping_percentage: WHITE_BED
+  projectiles_can_break_blocks: ARROW
+  pvp: IRON_SWORD
+  raids: CROSSBOW
+  random_tick_speed: WHEAT
+  reduced_debug_info: REDSTONE_TORCH
+  respawn_radius: RED_BED
+  send_command_feedback: REDSTONE_LAMP
+  show_advancement_messages: BOOK
+  show_death_messages: PAPER
+  spawn_mobs: ZOMBIE_SPAWN_EGG
+  spawn_monsters: SKELETON_SPAWN_EGG
+  spawn_patrols: PILLAGER_SPAWN_EGG
+  spawn_phantoms: PHANTOM_SPAWN_EGG
+  spawn_wandering_traders: WANDERING_TRADER_SPAWN_EGG
+  spawn_wardens: WARDEN_SPAWN_EGG
+  spawner_blocks_work: SPAWNER
+  spectators_generate_chunks: ENDER_EYE
+  spread_vines: VINE
+  tnt_explodes: TNT
+  tnt_explosion_drop_decay: TNT_MINECART
+  universal_anger: SPIDER_EYE
+  water_source_conversion: WATER_BUCKET

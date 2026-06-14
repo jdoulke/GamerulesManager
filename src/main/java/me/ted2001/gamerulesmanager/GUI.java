@@ -58,7 +58,7 @@ public class GUI {
         int guiSlot=0;
         for (int i = 36; i < gamerules.length; i++) {
             GameruleCreator creator = new GameruleCreator();
-            gui.setItem(guiSlot , creator.GamerulesCreator(gamerules[i], p.getWorld()));
+            gui.setItem(guiSlot , creator.GamerulesCreator(gamerules[i], WorldSelected));
             guiSlot++;
         }
 

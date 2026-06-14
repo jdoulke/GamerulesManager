@@ -98,105 +98,68 @@ public class GUIListener implements Listener {
         }
     }
 
+    @SuppressWarnings({"rawtypes", "unchecked"})
     private void valueReceiver(Player p, String gamerule) {
         World world = WorldSelected;
+
+        GameRule<?> rule = GameRule.getByName(gamerule);
+
+        if (rule == null) {
+            p.sendMessage(getPlugin().getPluginPrefix() + ChatColor.RED + "Unknown gamerule: " + gamerule);
+            p.playSound(p.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
+            return;
+        }
+
+        if (rule.getType() != Integer.class) {
+            p.sendMessage(getPlugin().getPluginPrefix() + ChatColor.RED + "This gamerule is not an integer gamerule.");
+            p.playSound(p.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
+            return;
+        }
+
         new AnvilGUI.Builder()
                 .itemLeft(getItem())
                 .onClick((slot, stateSnapshot) -> {
-                    String text = stateSnapshot.getText();
+                    if (slot != AnvilGUI.Slot.OUTPUT) {
+                        return Collections.emptyList();
+                    }
+
+                    String text = stateSnapshot.getText().trim();
                     int value;
-                    try{
+
+                    try {
                         value = Integer.parseInt(text);
-                    }catch (NumberFormatException ex){
-                        p.sendMessage(getPlugin().getPluginPrefix() + ChatColor.YELLOW + "You didn't type an " + ChatColor.RED + "integer number" + ChatColor.YELLOW +".");
+                    } catch (NumberFormatException ex) {
+                        p.sendMessage(getPlugin().getPluginPrefix()
+                                + ChatColor.YELLOW + "You didn't type an "
+                                + ChatColor.RED + "integer number"
+                                + ChatColor.YELLOW + ".");
+
                         p.playSound(p.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
-                        return Collections.singletonList(AnvilGUI.ResponseAction.openInventory(gameruleSetterGui(p, WorldSelected)));
+
+                        return Collections.singletonList(
+                                AnvilGUI.ResponseAction.replaceInputText("Enter integer number")
+                        );
                     }
-                    switch (gamerule) {
-                        case "randomTickSpeed":
-                            integerGameruleSetter(GameRule.RANDOM_TICK_SPEED, value, world, p);
-                            if(gamerulesSlots.get(gamerule) < 36) {
-                                return Collections.singletonList(AnvilGUI.ResponseAction.openInventory(gameruleSetterGui(p, WorldSelected)));
-                            }
-                            else{
-                                gameruleSetterGuiPage2(p);
-                                return Collections.singletonList(AnvilGUI.ResponseAction.openInventory(gameruleSetterGuiPage2));
-                            }
-                        case "maxEntityCramming":
-                            integerGameruleSetter(GameRule.MAX_ENTITY_CRAMMING, value, world, p);
-                            if(gamerulesSlots.get(gamerule) < 36)
-                                return Collections.singletonList(AnvilGUI.ResponseAction.openInventory(gameruleSetterGui(p, WorldSelected)));
-                            else{
-                                gameruleSetterGuiPage2(p);
-                                return Collections.singletonList(AnvilGUI.ResponseAction.openInventory(gameruleSetterGuiPage2));
-                            }
-                        case "maxCommandForkCount":
-                            integerGameruleSetter(GameRule.MAX_COMMAND_FORKS, value, world, p);
-                            if(gamerulesSlots.get(gamerule) < 36)
-                                return Collections.singletonList(AnvilGUI.ResponseAction.openInventory(gameruleSetterGui(p, WorldSelected)));
-                            else{
-                                gameruleSetterGuiPage2(p);
-                                return Collections.singletonList(AnvilGUI.ResponseAction.openInventory(gameruleSetterGuiPage2));
-                            }
-                        case "maxCommandChainLength":
-                            integerGameruleSetter(GameRule.MAX_COMMAND_SEQUENCE_LENGTH, value, world, p);
-                            if(gamerulesSlots.get(gamerule) < 36)
-                                return Collections.singletonList(AnvilGUI.ResponseAction.openInventory(gameruleSetterGui(p, WorldSelected)));
-                            else{
-                                gameruleSetterGuiPage2(p);
-                                return Collections.singletonList(AnvilGUI.ResponseAction.openInventory(gameruleSetterGuiPage2));
-                            }
-                        case "playersNetherPortalCreativeDelay":
-                            integerGameruleSetter(GameRule.PLAYERS_NETHER_PORTAL_CREATIVE_DELAY, value, world, p);
-                            if(gamerulesSlots.get(gamerule) < 36)
-                                return Collections.singletonList(AnvilGUI.ResponseAction.openInventory(gameruleSetterGui(p, WorldSelected)));
-                            else{
-                                gameruleSetterGuiPage2(p);
-                                return Collections.singletonList(AnvilGUI.ResponseAction.openInventory(gameruleSetterGuiPage2));
-                            }
-                        case "playersNetherPortalDefaultDelay":
-                            integerGameruleSetter(GameRule.PLAYERS_NETHER_PORTAL_DEFAULT_DELAY, value, world, p);
-                            if(gamerulesSlots.get(gamerule) < 36)
-                                return Collections.singletonList(AnvilGUI.ResponseAction.openInventory(gameruleSetterGui(p, WorldSelected)));
-                            else{
-                                gameruleSetterGuiPage2(p);
-                                return Collections.singletonList(AnvilGUI.ResponseAction.openInventory(gameruleSetterGuiPage2));
-                            }
-                        case "playersSleepingPercentage":
-                            integerGameruleSetter(GameRule.PLAYERS_SLEEPING_PERCENTAGE, value, world, p);
-                            if(gamerulesSlots.get(gamerule) < 36)
-                                return Collections.singletonList(AnvilGUI.ResponseAction.openInventory(gameruleSetterGui(p, WorldSelected)));
-                            else{
-                                gameruleSetterGuiPage2(p);
-                                return Collections.singletonList(AnvilGUI.ResponseAction.openInventory(gameruleSetterGuiPage2));
-                            }
-                        case "snowAccumulationHeight":
-                            integerGameruleSetter(GameRule.MAX_SNOW_ACCUMULATION_HEIGHT, value, world, p);
-                            if(gamerulesSlots.get(gamerule) < 36)
-                                return Collections.singletonList(AnvilGUI.ResponseAction.openInventory(gameruleSetterGui(p, WorldSelected)));
-                            else{
-                                gameruleSetterGuiPage2(p);
-                                return Collections.singletonList(AnvilGUI.ResponseAction.openInventory(gameruleSetterGuiPage2));
-                            }
-                        case "commandModificationBlockLimit":
-                            integerGameruleSetter(GameRule.MAX_BLOCK_MODIFICATIONS, value, world, p);
-                            if(gamerulesSlots.get(gamerule) < 36)
-                                return Collections.singletonList(AnvilGUI.ResponseAction.openInventory(gameruleSetterGui(p, WorldSelected)));
-                            else{
-                                gameruleSetterGuiPage2(p);
-                                return Collections.singletonList(AnvilGUI.ResponseAction.openInventory(gameruleSetterGuiPage2));
-                            }
+
+                    integerGameruleSetter((GameRule) rule, value, world, p);
+
+                    if ((Integer) gamerulesSlots.get(gamerule) < 36) {
+                        return Collections.singletonList(
+                                AnvilGUI.ResponseAction.openInventory(gameruleSetterGui(p, WorldSelected))
+                        );
                     }
-                    return null;
+
+                    gameruleSetterGuiPage2(p);
+
+                    return Collections.singletonList(
+                            AnvilGUI.ResponseAction.openInventory(gameruleSetterGuiPage2)
+                    );
                 })
-                .text("Read paper's info.")
+                .text("0")
                 .title("Enter your value.")
                 .plugin(getPlugin())
                 .open(p);
-
     }
-
-
 
     private void booleanGameruleSet(GameRule<Boolean> gamerule, boolean value, World world, Player p){
         //here set the gamerule value to !value
@@ -238,6 +201,8 @@ public class GUIListener implements Listener {
     }
 
     private void copyGamerules(World world){
+        gamerulesList.clear();
+
         String[] gamerulesNames = world.getGameRules();
         Arrays.sort(gamerulesNames);
         for (String gamerule : gamerulesNames) {
@@ -247,66 +212,119 @@ public class GUIListener implements Listener {
         chosenWorld = world;
     }
 
-    private void EssentialsButtons(InventoryClickEvent e, Player p, World selectedWorld){
-        //get back option
-        if (e.getCurrentItem().getItemMeta().getDisplayName().equals(ChatColor.RED + "Get Back in World Selection.")) {
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    private void EssentialsButtons(InventoryClickEvent e, Player p, World selectedWorld) {
+        ItemStack clickedItem = e.getCurrentItem();
+
+        if (clickedItem == null || !clickedItem.hasItemMeta()) {
+            return;
+        }
+
+        ItemMeta itemMeta = clickedItem.getItemMeta();
+
+        if (itemMeta == null || !itemMeta.hasDisplayName()) {
+            return;
+        }
+
+        String displayName = itemMeta.getDisplayName();
+
+        if (selectedWorld == null) {
+            p.sendMessage(getPlugin().getPluginPrefix() + ChatColor.RED + "No world selected.");
+            p.playSound(p.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
+            p.openInventory(GUI.guiBuilder(p));
+            return;
+        }
+
+        // Get back option
+        if (displayName.equals(ChatColor.RED + "Get Back in World Selection.")) {
             p.openInventory(GUI.guiBuilder(p));
             p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_USE, 1, 1);
-            //exit option
-        }else if(e.getCurrentItem().getItemMeta().getDisplayName().equals(ChatColor.RED + "EXIT")) {
+            return;
+        }
+
+        // Exit option
+        if (displayName.equals(ChatColor.RED + "EXIT")) {
             p.closeInventory();
-            if(Integer.parseInt(serverVersion) >= 14)
-                p.playSound(p.getLocation(), Sound.ENTITY_VILLAGER_CELEBRATE, 1,1);
-            else
-                p.playSound(p.getLocation(), Sound.ENTITY_VILLAGER_NO, 1,1);
-            //next page option
-        }else if(e.getCurrentItem().getItemMeta().getDisplayName().equals(ChatColor.RED + "Next page with Gamerules.")) {
+            p.playSound(p.getLocation(), Sound.ENTITY_VILLAGER_CELEBRATE, 1, 1);
+            return;
+        }
+
+        // Next page option
+        if (displayName.equals(ChatColor.RED + "Next page with Gamerules.")) {
             GUI.gameruleSetterGuiPage2(p);
-            p.playSound(p.getLocation(), Sound.ITEM_BOOK_PAGE_TURN,1,1);
+            p.playSound(p.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 1, 1);
             p.openInventory(gameruleSetterGuiPage2);
-        }else if(e.getCurrentItem().getItemMeta().getDisplayName().equals(ChatColor.RED + "Previous page with Gamerules.")) {
-            GUI.gameruleSetterGui(p,WorldSelected);
-            p.playSound(p.getLocation(), Sound.ITEM_BOOK_PAGE_TURN,1,1);
-            p.openInventory(GUI.gameruleSetterGui(p,WorldSelected));
-        }else if(e.getCurrentItem().getItemMeta().getDisplayName().equals(ChatColor.RED + "Reset all " + ChatColor.YELLOW + "Gamerules")) {
+            return;
+        }
+
+        // Previous page option
+        if (displayName.equals(ChatColor.RED + "Previous page with Gamerules.")) {
+            p.playSound(p.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 1, 1);
+            p.openInventory(GUI.gameruleSetterGui(p, WorldSelected));
+            return;
+        }
+
+        // Reset option
+        if (displayName.equals(ChatColor.RED + "Reset all " + ChatColor.YELLOW + "Gamerules")) {
             resetGamerules(selectedWorld);
-            p.openInventory(GUI.gameruleSetterGui(p,selectedWorld));
-            p.playSound(p.getLocation(), Sound.BLOCK_ENCHANTMENT_TABLE_USE, 1,1);
-            //copy option
-        }else if(e.getCurrentItem().getItemMeta().getDisplayName().equals(ChatColor.DARK_BLUE + "Copy " + ChatColor.YELLOW + "Gamerules")) {
+            p.openInventory(GUI.gameruleSetterGui(p, selectedWorld));
+            p.playSound(p.getLocation(), Sound.BLOCK_ENCHANTMENT_TABLE_USE, 1, 1);
+            return;
+        }
+
+        // Copy option
+        if (displayName.equals(ChatColor.DARK_BLUE + "Copy " + ChatColor.YELLOW + "Gamerules")) {
             copyGamerules(selectedWorld);
             p.openInventory(GUI.guiBuilder(p));
-            if(Integer.parseInt(serverVersion) >= 14)
-                p.playSound(p.getLocation(), Sound.UI_CARTOGRAPHY_TABLE_TAKE_RESULT, 1,1);
-            else
-                p.playSound(p.getLocation(), Sound.BLOCK_ENCHANTMENT_TABLE_USE, 1,1);
-            //paste option
-        }else if(e.getCurrentItem().getItemMeta().getDisplayName().equals(ChatColor.DARK_RED + "Paste " + ChatColor.YELLOW + "Gamerules")) {
-            if(chosenWorld != null) {
-                for (int i = 0; i < WorldSelected.getGameRules().length; i++){
-                    GameRule gamerule = GameRule.getByName(gamerulesList.get(i).getGameRule());
-                    int intValue;
-                    boolean booleanValue;
-                    try {
-                        intValue = Integer.parseInt(gamerulesList.get(i).getValue());
-                        WorldSelected.setGameRule(gamerule, intValue);
-                    }catch (NumberFormatException ex){
-                        booleanValue = Boolean.parseBoolean(gamerulesList.get(i).getValue());
-                        WorldSelected.setGameRule(gamerule, booleanValue);
-                    }
-                }
-                if(Integer.parseInt(serverVersion) >= 14)
-                    p.playSound(p.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 1,1);
-                else
-                    p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_USE, 1,1);
-                p.openInventory(GUI.gameruleSetterGui(p,selectedWorld));
-                p.sendMessage(getPlugin().getPluginPrefix() + ChatColor.YELLOW +"You copied all " + ChatColor.AQUA + "Gamerules " +
-                        ChatColor.YELLOW +"from "  + ChatColor.BLUE + chosenWorld.getName()
-                        + ChatColor.YELLOW + " to " + ChatColor.RED + WorldSelected.getName() + ChatColor.YELLOW + ".");
-            }else{
-                p.sendMessage(getPlugin().getPluginPrefix() + ChatColor.RED + "" + ChatColor.BOLD +"You didn't copy any world.");
-                p.playSound(p.getLocation(), Sound.ENTITY_VILLAGER_NO, 1,1);
+            p.playSound(p.getLocation(), Sound.UI_CARTOGRAPHY_TABLE_TAKE_RESULT, 1, 1);
+            return;
+        }
+
+        // Paste option
+        if (displayName.equals(ChatColor.DARK_RED + "Paste " + ChatColor.YELLOW + "Gamerules")) {
+            if (chosenWorld == null || gamerulesList.isEmpty()) {
+                p.sendMessage(getPlugin().getPluginPrefix()
+                        + ChatColor.RED + "" + ChatColor.BOLD + "You didn't copy any world.");
+                p.playSound(p.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
+                return;
             }
+
+            for (Object object : gamerulesList) {
+                CopyGamerules copiedGamerule = (CopyGamerules) object;
+
+                GameRule gamerule = GameRule.getByName(copiedGamerule.getGameRule());
+
+                if (gamerule == null) {
+                    continue;
+                }
+
+                String value = copiedGamerule.getValue();
+
+                if (gamerule.getType() == Integer.class) {
+                    try {
+                        WorldSelected.setGameRule(gamerule, Integer.parseInt(value));
+                    } catch (NumberFormatException ignored) {
+                        getServer().getLogger().warning("Could not parse integer value for gamerule: "
+                                + copiedGamerule.getGameRule());
+                    }
+                } else if (gamerule.getType() == Boolean.class) {
+                    WorldSelected.setGameRule(gamerule, Boolean.parseBoolean(value));
+                }
+            }
+
+            p.playSound(p.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 1, 1);
+            p.openInventory(GUI.gameruleSetterGui(p, selectedWorld));
+
+            p.sendMessage(getPlugin().getPluginPrefix()
+                    + ChatColor.YELLOW + "You copied all "
+                    + ChatColor.AQUA + "Gamerules "
+                    + ChatColor.YELLOW + "from "
+                    + ChatColor.BLUE + chosenWorld.getName()
+                    + ChatColor.YELLOW + " to "
+                    + ChatColor.RED + WorldSelected.getName()
+                    + ChatColor.YELLOW + ".");
+
+            return;
         }
     }
 }

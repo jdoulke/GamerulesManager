@@ -20,15 +20,11 @@ import java.util.Objects;
 public final class GamerulesManager extends JavaPlugin {
 
     private static GamerulesManager plugin;
-    public static String serverVersion;
     public static HashMap<GameRule<?>, ItemStack> gamerulesDisplayItems = new HashMap<>();
     private String prefix;
 
     @Override
     public void onEnable() {
-        //get server Version
-        String rawVersion = Bukkit.getBukkitVersion();
-        serverVersion = new String(new char[]{rawVersion.charAt(2), rawVersion.charAt(3)});
         //get instance of the plugin
         plugin = this;
         //get the config.yml
