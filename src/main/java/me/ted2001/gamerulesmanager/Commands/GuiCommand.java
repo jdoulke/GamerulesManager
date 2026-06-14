@@ -30,7 +30,7 @@ public class GuiCommand implements CommandExecutor{
                     else
                         p.playSound(p.getLocation(), Sound.ENTITY_VILLAGER_YES, 1, 1);
                 } else
-                    p.sendMessage(ColorUtils.translateColorCodes(Objects.requireNonNull(getPlugin().getConfig().getString("no-permission"))));
+                    p.sendMessage(ColorUtils.translateColorCodes(Objects.requireNonNull(getPlugin().getConfig().getString("noPermission"))));
                 p.playSound(p.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
             } else if (args.length == 1) {
                 String arg0 = args[0];

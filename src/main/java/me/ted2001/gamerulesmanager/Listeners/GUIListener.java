@@ -122,22 +122,6 @@ public class GUIListener implements Listener {
                                 gameruleSetterGuiPage2(p);
                                 return Collections.singletonList(AnvilGUI.ResponseAction.openInventory(gameruleSetterGuiPage2));
                             }
-                        case "spawnRadius":
-                            integerGameruleSetter(GameRule.SPAWN_RADIUS, value, world, p);
-                            if(gamerulesSlots.get(gamerule) < 36)
-                                return Collections.singletonList(AnvilGUI.ResponseAction.openInventory(gameruleSetterGui(p, WorldSelected)));
-                            else{
-                                gameruleSetterGuiPage2(p);
-                                return Collections.singletonList(AnvilGUI.ResponseAction.openInventory(gameruleSetterGuiPage2));
-                            }
-                        case "spawnChunkRadius":
-                            integerGameruleSetter(GameRule.SPAWN_CHUNK_RADIUS, value, world, p);
-                            if(gamerulesSlots.get(gamerule) < 36)
-                                return Collections.singletonList(AnvilGUI.ResponseAction.openInventory(gameruleSetterGui(p, WorldSelected)));
-                            else{
-                                gameruleSetterGuiPage2(p);
-                                return Collections.singletonList(AnvilGUI.ResponseAction.openInventory(gameruleSetterGuiPage2));
-                            }
                         case "maxEntityCramming":
                             integerGameruleSetter(GameRule.MAX_ENTITY_CRAMMING, value, world, p);
                             if(gamerulesSlots.get(gamerule) < 36)
@@ -147,7 +131,7 @@ public class GUIListener implements Listener {
                                 return Collections.singletonList(AnvilGUI.ResponseAction.openInventory(gameruleSetterGuiPage2));
                             }
                         case "maxCommandForkCount":
-                            integerGameruleSetter(GameRule.MAX_COMMAND_FORK_COUNT, value, world, p);
+                            integerGameruleSetter(GameRule.MAX_COMMAND_FORKS, value, world, p);
                             if(gamerulesSlots.get(gamerule) < 36)
                                 return Collections.singletonList(AnvilGUI.ResponseAction.openInventory(gameruleSetterGui(p, WorldSelected)));
                             else{
@@ -155,7 +139,7 @@ public class GUIListener implements Listener {
                                 return Collections.singletonList(AnvilGUI.ResponseAction.openInventory(gameruleSetterGuiPage2));
                             }
                         case "maxCommandChainLength":
-                            integerGameruleSetter(GameRule.MAX_COMMAND_CHAIN_LENGTH, value, world, p);
+                            integerGameruleSetter(GameRule.MAX_COMMAND_SEQUENCE_LENGTH, value, world, p);
                             if(gamerulesSlots.get(gamerule) < 36)
                                 return Collections.singletonList(AnvilGUI.ResponseAction.openInventory(gameruleSetterGui(p, WorldSelected)));
                             else{
@@ -187,7 +171,7 @@ public class GUIListener implements Listener {
                                 return Collections.singletonList(AnvilGUI.ResponseAction.openInventory(gameruleSetterGuiPage2));
                             }
                         case "snowAccumulationHeight":
-                            integerGameruleSetter(GameRule.SNOW_ACCUMULATION_HEIGHT, value, world, p);
+                            integerGameruleSetter(GameRule.MAX_SNOW_ACCUMULATION_HEIGHT, value, world, p);
                             if(gamerulesSlots.get(gamerule) < 36)
                                 return Collections.singletonList(AnvilGUI.ResponseAction.openInventory(gameruleSetterGui(p, WorldSelected)));
                             else{
@@ -195,7 +179,7 @@ public class GUIListener implements Listener {
                                 return Collections.singletonList(AnvilGUI.ResponseAction.openInventory(gameruleSetterGuiPage2));
                             }
                         case "commandModificationBlockLimit":
-                            integerGameruleSetter(GameRule.COMMAND_MODIFICATION_BLOCK_LIMIT, value, world, p);
+                            integerGameruleSetter(GameRule.MAX_BLOCK_MODIFICATIONS, value, world, p);
                             if(gamerulesSlots.get(gamerule) < 36)
                                 return Collections.singletonList(AnvilGUI.ResponseAction.openInventory(gameruleSetterGui(p, WorldSelected)));
                             else{
