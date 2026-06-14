@@ -1,11 +1,11 @@
 name: GamerulesManager
 version: '${project.version}'
 main: me.ted2001.gamerulesmanager.GamerulesManager
-api-version: 1.13
+api-version: 26.1
 authors: [ Ted_2001 ]
-description: Configurate world's gamerules via gui.
+description: Manage Minecraft gamerules through a GUI.
 commands:
   gamerule:
     description: Open GUI Manager.
     permission: gamerulemanager.use
-    aliases: [mgamerule,ggamerule,gamerules,gamerulemanager]
+    aliases: [ mgamerule,ggamerule,gamerules,gamerulemanager ]
