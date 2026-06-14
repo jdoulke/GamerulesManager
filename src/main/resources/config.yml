@@ -153,7 +153,7 @@ gameruleItems:
   block_drops: OAK_LOG
   block_explosion_drop_decay: FIRE_CHARGE
   command_block_output: COMMAND_BLOCK
-  command_blocks_work:
+  command_blocks_work: COMMAND_BLOCK
   drowning_damage: WATER_BUCKET
   ender_pearls_vanish_on_death: ENDER_PEARL
   entity_drops: ROTTEN_FLESH
