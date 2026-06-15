@@ -1,20 +1,121 @@
-A Spigot Plugin for Minecraft Servers
+# GamerulesManager
 
-Spigot URL: https://www.spigotmc.org/resources/gamerules-manager-1-13-1-19.102215/
+A Minecraft server plugin that allows server owners and administrators to manage world gamerules through an easy-to-use GUI.
 
-Stats from users using this plugin: https://bstats.org/plugin/bukkit/GamerulesManager/15346
+GamerulesManager lets you select a world, view its gamerules, change boolean and integer values, copy gamerules between worlds, and reset gamerules to their default values.
 
-Description:
+---
 
-With this Plugin Server owners and administrators can manage the gamerules of a world via GUI. It's very easy, they can change values with only one click. Also this plugin it is compatible with all the plugins for Spigot Minecraft Servers. The player can select the world he wants to manage and after that, set up gamerules of the world he chosed.
+## Requirements
 
-Features
-  Configurate all gamerules in 2 minutes.
-  Copy-Paste gamerules from worlds with 2 clicks.
-  Reset all gamerules to default values with 1 click.
-  100% compitable with all third parties plugin.
+> **Important:** GamerulesManager v5.x is a breaking update.
 
-Screenshots:
+| Plugin Version | Minecraft Version | Java Version |
+|---|---:|---:|
+| v5.x | Minecraft 26.x.x | Java 25 |
+| v4.x | Minecraft 1.13 - 1.21 | Java 8+ |
+
+If your server is running Minecraft 1.13 - 1.21, use the latest v4.x version of the plugin.
+
+---
+
+## Features
+
+- Manage gamerules through a clean inventory GUI
+- Select which world you want to configure
+- Toggle boolean gamerules with one click
+- Edit integer gamerules through an AnvilGUI input
+- Copy gamerules from one world and paste them to another
+- Reset all gamerules of a world to their default values
+- Configurable gamerule descriptions
+- Configurable display items for each gamerule
+- Per-player GUI session handling
+- bStats support
+
+---
+
+## Commands
+
+| Command | Description | Permission |
+|---|---|---|
+| `/gamerule` | Opens the GamerulesManager GUI | `gamerulemanager.use` |
+| `/gamerule reload` | Reloads the plugin configuration | `gamerulemanager.reload` |
+
+### Aliases
+
+- `/mgamerule`
+- `/ggamerule`
+- `/gamerules`
+- `/gamerulemanager`
+
+## Permissions
+
+| Permission | Description |
+|---|---|
+| `gamerulemanager.use` | Allows the player to open the GUI |
+| `gamerulemanager.reload` | Allows the player to reload the plugin configuration |
+
+## Installation
+1. Download the latest plugin `.jar`.
+2. Place it inside your server's `plugins` folder.
+3. Restart your server.
+4. Open the GUI with `/gamerule`.
+
+## Configuration
+
+The plugin uses `config.yml` to customize messages, gamerule descriptions, and display items.
+
+```yaml
+freeze_damage: "&7Whether players should take damage when freezing in powder snow."
+random_tick_speed: "&7How often random block ticks occur, such as crop growth and leaf decay."
+players_sleeping_percentage: "&7The percentage of players that must sleep to skip the night."
+```
+
+You can also change the item used for each gamerule:
+
+```yaml
+gameruleItems:
+  freeze_damage: BLUE_ICE
+  random_tick_speed: WHEAT
+  players_sleeping_percentage: WHITE_BED
+```
+
+If an item is missing or invalid, the plugin will use `BOOK` as a fallback.
+
+## Updating from v4.x to v5.x
+
+GamerulesManager v5.x only supports Minecraft 26.x.x and requires Java 25.
+
+Before updating:
+
+1. Make sure your server is running Minecraft 26.x.x.
+2. Make sure your server is running Java 25.
+3. Back up your old `config.yml`.
+4. Delete the old config file or manually migrate the old camelCase gamerule names to the new snake_case format.
+
+Example migration:
+
+```yaml
+# Old v4.x format
+freezeDamage: "&7Whether the player should take damage when inside powder snow."
+
+# New v5.x format
+freeze_damage: "&7Whether players should take damage when freezing in powder snow."
+```
+
+If you are staying on Minecraft 1.13 - 1.21, do not update to v5.x. Use the latest v4.x version instead.
+
+## Metrics
+
+This plugin uses bStats to collect anonymous usage statistics.
+
+[bStats](https://bstats.org/plugin/bukkit/GamerulesManager/15346)
+
+## Links
+
+[Spigot Resource](https://www.spigotmc.org/resources/gamerules-manager-1-13-1-19.102215/)
+
+## Screenshots
 
 ![Boolean Gamerule Example](https://user-images.githubusercontent.com/17084358/216966504-be8dfcee-e37b-4ec0-8ed5-948a325a3685.png)
 ![Copy Gamerules ](https://user-images.githubusercontent.com/17084358/216966507-12ba6440-f3a9-4cd2-9b35-4af7c844dd7f.png)
