@@ -15,6 +15,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -272,7 +273,6 @@ public class GUIListener implements Listener {
 
         // Next page option
         if (displayName.equals(ChatColor.RED + "Next page with Gamerules.")) {
-            GUI.gameruleSetterGuiPage2(p);
             p.playSound(p.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 1, 1);
             p.openInventory(GUI.gameruleSetterGuiPage2(p));
             return;
@@ -346,5 +346,10 @@ public class GUIListener implements Listener {
 
             return;
         }
+    }
+
+    @EventHandler
+    public void onPlayerQuit(PlayerQuitEvent event) {
+        PlayerSessionManager.clear(event.getPlayer());
     }
 }
