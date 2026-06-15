@@ -13,34 +13,37 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-import static me.ted2001.gamerulesmanager.Listeners.WorldSelectorListener.WorldSelected;
+import me.ted2001.gamerulesmanager.Utils.PlayerSessionManager;
 
 public class GUI {
 
     private static final Buttons button = new Buttons();
-    public static Inventory gameruleSetterGuiPage2;
     public static String[] gamerules;
     public static HashMap<String, Integer> gamerulesSlots = new HashMap<>();
     public static Inventory gameruleSetterGui(Player p, World world) {
 
         //sizes 9,18,27,36,45,54
-        Inventory gui = Bukkit.createInventory(p, 54, ChatColor.DARK_PURPLE + "Gamerule Manager" + ChatColor.AQUA + " " +ChatColor.BOLD+ WorldSelected.getName());
-
-
+        Inventory gui = Bukkit.createInventory(p, 54, ChatColor.DARK_PURPLE + "Gamerule Manager" + ChatColor.AQUA + " " + ChatColor.BOLD + world.getName());
         gamerules = world.getGameRules();
+        gamerulesSlots.clear();
         Arrays.sort(gamerules);
         for(int i = 0; i < gamerules.length;i++){
             gamerulesSlots.put(gamerules[i],i);
         }
+        GameruleCreator creator = new GameruleCreator();
+
         for (int i = 0; i < gamerules.length && i < 36; i++) {
-            GameruleCreator creator = new GameruleCreator();
-            if(creator.GamerulesCreator(gamerules[i], world) != null)
-                gui.setItem(i, creator.GamerulesCreator(gamerules[i], world));
-            else
-                gui.setItem(i , new ItemStack(Material.BARRIER));
+            ItemStack item = creator.GamerulesCreator(gamerules[i], world);
+
+            if (item != null) {
+                gui.setItem(i, item);
+            } else {
+                gui.setItem(i, new ItemStack(Material.BARRIER));
+            }
         }
+
         gui.setItem(45, button.backButton());
-        gui.setItem(48, button.copyButton(WorldSelected));
+        gui.setItem(48, button.copyButton(world));
         gui.setItem(49, button.pasteButton());
         if(gamerules.length > 36)
             gui.setItem(51, button.nextPageButton());
@@ -49,27 +52,40 @@ public class GUI {
         return gui;
     }
 
-    public static void gameruleSetterGuiPage2(Player p) {
+    public static Inventory gameruleSetterGuiPage2(Player p) {
 
+        World selectedWorld = PlayerSessionManager.getSelectedWorld(p);
 
-        Inventory gui = Bukkit.createInventory(p, 54, ChatColor.DARK_PURPLE + "Gamerule Manager Page 2" + ChatColor.AQUA + " " + ChatColor.BOLD + WorldSelected.getName());
+        if (selectedWorld == null) {
+            return guiBuilder(p);
+        }
 
+        Inventory gui = Bukkit.createInventory(p, 54, ChatColor.DARK_PURPLE + "Gamerule Manager Page 2" + ChatColor.AQUA + " " + ChatColor.BOLD + selectedWorld.getName());
 
-        int guiSlot=0;
+        GameruleCreator creator = new GameruleCreator();
+
+        int guiSlot = 0;
         for (int i = 36; i < gamerules.length; i++) {
-            GameruleCreator creator = new GameruleCreator();
-            gui.setItem(guiSlot , creator.GamerulesCreator(gamerules[i], WorldSelected));
+            ItemStack item = creator.GamerulesCreator(gamerules[i], selectedWorld);
+
+            if (item != null) {
+                gui.setItem(guiSlot, item);
+            } else {
+                gui.setItem(guiSlot, new ItemStack(Material.BARRIER));
+            }
+
             guiSlot++;
         }
 
         //buttons
         gui.setItem(45, button.backButton());
-        gui.setItem(48, button.copyButton(WorldSelected));
+        gui.setItem(48, button.copyButton(selectedWorld));
         gui.setItem(49, button.pasteButton());
         gui.setItem(50, button.previousPageButton());
         gui.setItem(52, button.resetButton());
         gui.setItem(53, button.exitButton());
-        gameruleSetterGuiPage2 = gui;
+
+        return gui;
     }
 
     public static Inventory guiBuilder(Player p) {

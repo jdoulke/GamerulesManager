@@ -8,7 +8,6 @@ import me.ted2001.gamerulesmanager.Listeners.WorldSelectorListener;
 import me.ted2001.gamerulesmanager.Utils.ColorUtils;
 import me.ted2001.gamerulesmanager.Utils.GameruleDisplayItem;
 import org.bstats.bukkit.Metrics;
-import org.bukkit.Bukkit;
 import org.bukkit.GameRule;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.inventory.ItemStack;

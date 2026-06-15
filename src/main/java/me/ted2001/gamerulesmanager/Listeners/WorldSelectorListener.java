@@ -1,6 +1,7 @@
 package me.ted2001.gamerulesmanager.Listeners;
 
 import me.ted2001.gamerulesmanager.GUI;
+import me.ted2001.gamerulesmanager.Utils.PlayerSessionManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -14,12 +15,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 public class WorldSelectorListener implements Listener {
-
-    public static World WorldSelected;
-
-    public void setWorldSelected(World worldSelected) {
-        WorldSelected = worldSelected;
-    }
 
     @EventHandler
     public void onGuiClick(InventoryClickEvent e) {
@@ -50,6 +45,7 @@ public class WorldSelectorListener implements Listener {
         String displayName = itemMeta.getDisplayName();
 
         if (displayName.equals(ChatColor.RED + "EXIT")) {
+            PlayerSessionManager.clear(player);
             player.closeInventory();
             player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_CELEBRATE, 1, 1);
             return;
@@ -72,7 +68,7 @@ public class WorldSelectorListener implements Listener {
             return;
         }
 
-        setWorldSelected(world);
+        PlayerSessionManager.setSelectedWorld(player, world);
 
         player.playSound(player.getLocation(), Sound.BLOCK_ANVIL_USE, 1, 1);
         player.openInventory(GUI.gameruleSetterGui(player, world));

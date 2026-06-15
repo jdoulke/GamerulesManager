@@ -19,18 +19,15 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import static me.ted2001.gamerulesmanager.GUI.*;
 import static me.ted2001.gamerulesmanager.GamerulesManager.*;
-import static me.ted2001.gamerulesmanager.Listeners.WorldSelectorListener.WorldSelected;
+import me.ted2001.gamerulesmanager.Utils.PlayerSessionManager;
 import static org.bukkit.Bukkit.getServer;
 
 @SuppressWarnings({"ConstantConditions", "rawtypes", "unchecked"})
 public class GUIListener implements Listener {
-
-    public static World chosenWorld = null;
-    private final ArrayList<CopyGamerules> gamerulesList = new ArrayList();
-
 
 
 
@@ -46,7 +43,13 @@ public class GUIListener implements Listener {
                 Player p = (Player) e.getWhoClicked();
                 if (e.getCurrentItem() == null)
                     return;
-                World selectedWorld = WorldSelected;
+                World selectedWorld = PlayerSessionManager.getSelectedWorld(p);
+
+                if (selectedWorld == null) {
+                    p.sendMessage(getPlugin().getPluginPrefix() + ChatColor.RED + "No world selected.");
+                    p.openInventory(GUI.guiBuilder(p));
+                    return;
+                }
                 GameruleCreator creator = new GameruleCreator();
                 String clickedItem = ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName());
                 boolean flag = true;
@@ -71,7 +74,13 @@ public class GUIListener implements Listener {
                 e.setCancelled(true);
                 Inventory gui = e.getClickedInventory();
                 Player p = (Player) e.getWhoClicked();
-                World selectedWorld = WorldSelected;
+                World selectedWorld = PlayerSessionManager.getSelectedWorld(p);
+
+                if (selectedWorld == null) {
+                    p.sendMessage(getPlugin().getPluginPrefix() + ChatColor.RED + "No world selected.");
+                    p.openInventory(GUI.guiBuilder(p));
+                    return;
+                }
                 GameruleCreator creator = new GameruleCreator();
                 if (e.getCurrentItem() == null)
                     return;
@@ -100,7 +109,13 @@ public class GUIListener implements Listener {
 
     @SuppressWarnings({"rawtypes", "unchecked"})
     private void valueReceiver(Player p, String gamerule) {
-        World world = WorldSelected;
+        World world = PlayerSessionManager.getSelectedWorld(p);
+
+        if (world == null) {
+            p.sendMessage(getPlugin().getPluginPrefix() + ChatColor.RED + "No world selected.");
+            p.openInventory(GUI.guiBuilder(p));
+            return;
+        }
 
         GameRule<?> rule = GameRule.getByName(gamerule);
 
@@ -145,14 +160,12 @@ public class GUIListener implements Listener {
 
                     if ((Integer) gamerulesSlots.get(gamerule) < 36) {
                         return Collections.singletonList(
-                                AnvilGUI.ResponseAction.openInventory(gameruleSetterGui(p, WorldSelected))
+                                AnvilGUI.ResponseAction.openInventory(gameruleSetterGui(p, world))
                         );
                     }
 
-                    gameruleSetterGuiPage2(p);
-
                     return Collections.singletonList(
-                            AnvilGUI.ResponseAction.openInventory(gameruleSetterGuiPage2)
+                            AnvilGUI.ResponseAction.openInventory(GUI.gameruleSetterGuiPage2(p))
                     );
                 })
                 .text("0")
@@ -200,16 +213,24 @@ public class GUIListener implements Listener {
         }
     }
 
-    private void copyGamerules(World world){
-        gamerulesList.clear();
+    private void copyGamerules(Player player, World world) {
+        List<CopyGamerules> copiedRules = new ArrayList<>();
 
         String[] gamerulesNames = world.getGameRules();
         Arrays.sort(gamerulesNames);
+
         for (String gamerule : gamerulesNames) {
-            String value = world.getGameRuleValue(GameRule.getByName(gamerule)).toString();
-            gamerulesList.add(new CopyGamerules(gamerule, value));
+            GameRule<?> rule = GameRule.getByName(gamerule);
+
+            if (rule == null) {
+                continue;
+            }
+
+            String value = world.getGameRuleValue(rule).toString();
+            copiedRules.add(new CopyGamerules(gamerule, value));
         }
-        chosenWorld = world;
+
+        PlayerSessionManager.setCopiedGamerules(player, world, copiedRules);
     }
 
     @SuppressWarnings({"rawtypes", "unchecked"})
@@ -253,14 +274,14 @@ public class GUIListener implements Listener {
         if (displayName.equals(ChatColor.RED + "Next page with Gamerules.")) {
             GUI.gameruleSetterGuiPage2(p);
             p.playSound(p.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 1, 1);
-            p.openInventory(gameruleSetterGuiPage2);
+            p.openInventory(GUI.gameruleSetterGuiPage2(p));
             return;
         }
 
         // Previous page option
         if (displayName.equals(ChatColor.RED + "Previous page with Gamerules.")) {
             p.playSound(p.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 1, 1);
-            p.openInventory(GUI.gameruleSetterGui(p, WorldSelected));
+            p.openInventory(GUI.gameruleSetterGui(p, selectedWorld));
             return;
         }
 
@@ -274,7 +295,7 @@ public class GUIListener implements Listener {
 
         // Copy option
         if (displayName.equals(ChatColor.DARK_BLUE + "Copy " + ChatColor.YELLOW + "Gamerules")) {
-            copyGamerules(selectedWorld);
+            copyGamerules(p, selectedWorld);
             p.openInventory(GUI.guiBuilder(p));
             p.playSound(p.getLocation(), Sound.UI_CARTOGRAPHY_TABLE_TAKE_RESULT, 1, 1);
             return;
@@ -282,15 +303,14 @@ public class GUIListener implements Listener {
 
         // Paste option
         if (displayName.equals(ChatColor.DARK_RED + "Paste " + ChatColor.YELLOW + "Gamerules")) {
-            if (chosenWorld == null || gamerulesList.isEmpty()) {
+            if (!PlayerSessionManager.hasCopiedGamerules(p)) {
                 p.sendMessage(getPlugin().getPluginPrefix()
                         + ChatColor.RED + "" + ChatColor.BOLD + "You didn't copy any world.");
                 p.playSound(p.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
                 return;
             }
 
-            for (Object object : gamerulesList) {
-                CopyGamerules copiedGamerule = (CopyGamerules) object;
+            for (CopyGamerules copiedGamerule : PlayerSessionManager.getCopiedGamerules(p)) {
 
                 GameRule gamerule = GameRule.getByName(copiedGamerule.getGameRule());
 
@@ -302,13 +322,13 @@ public class GUIListener implements Listener {
 
                 if (gamerule.getType() == Integer.class) {
                     try {
-                        WorldSelected.setGameRule(gamerule, Integer.parseInt(value));
+                        selectedWorld.setGameRule(gamerule, Integer.parseInt(value));
                     } catch (NumberFormatException ignored) {
                         getServer().getLogger().warning("Could not parse integer value for gamerule: "
                                 + copiedGamerule.getGameRule());
                     }
                 } else if (gamerule.getType() == Boolean.class) {
-                    WorldSelected.setGameRule(gamerule, Boolean.parseBoolean(value));
+                    selectedWorld.setGameRule(gamerule, Boolean.parseBoolean(value));
                 }
             }
 
@@ -319,9 +339,9 @@ public class GUIListener implements Listener {
                     + ChatColor.YELLOW + "You copied all "
                     + ChatColor.AQUA + "Gamerules "
                     + ChatColor.YELLOW + "from "
-                    + ChatColor.BLUE + chosenWorld.getName()
+                    + ChatColor.BLUE + PlayerSessionManager.getCopiedFromWorld(p).getName()
                     + ChatColor.YELLOW + " to "
-                    + ChatColor.RED + WorldSelected.getName()
+                    + ChatColor.RED + selectedWorld.getName()
                     + ChatColor.YELLOW + ".");
 
             return;
