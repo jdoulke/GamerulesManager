@@ -1,4 +1,5 @@
 <img width="1254" height="1254" alt="Gamerule-manager" src="https://github.com/user-attachments/assets/68fd6a8a-d06f-4667-abd0-e3d31820dd70" />
+
 # GamerulesManager
 
 A Minecraft server plugin that allows server owners and administrators to manage world gamerules through an easy-to-use GUI.
