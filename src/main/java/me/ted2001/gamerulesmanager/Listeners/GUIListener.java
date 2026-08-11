@@ -131,9 +131,17 @@ public class GUIListener implements Listener {
             return;
         }
 
+        Integer defaultValue = world.getGameRuleDefault((GameRule<Integer>) rule);
+
         pendingValueInputs.put(p.getUniqueId(), new PendingValueInput(gamerule, world, page, 0));
         p.closeInventory();
-        sendConfiguredMessage(p, "integerInputPrompt", "&eType the new integer value for &b%gamerule%&e in chat. Your message will not be sent to other players.", gamerule);
+        sendConfiguredMessage(
+                p,
+                "integerInputPrompt",
+                "&eType the new integer value for &b%gamerule%&e in chat. &7Default value: &f%default_value%&e. Your message will not be sent to other players.",
+                gamerule,
+                String.valueOf(defaultValue)
+        );
         sendConfiguredMessage(p, "integerInputCancelHint", "&7Type &ccancel&7 to go back without changing it.");
     }
 
@@ -234,6 +242,13 @@ public class GUIListener implements Listener {
 
     private void sendConfiguredMessage(Player player, String path, String fallback, String gamerule) {
         String message = getPlugin().getConfig().getString(path, fallback).replace("%gamerule%", gamerule);
+        player.sendMessage(getPlugin().getPluginPrefix() + ColorUtils.translateColorCodes(message));
+    }
+
+    private void sendConfiguredMessage(Player player, String path, String fallback, String gamerule, String defaultValue) {
+        String message = getPlugin().getConfig().getString(path, fallback)
+                .replace("%gamerule%", gamerule)
+                .replace("%default_value%", defaultValue);
         player.sendMessage(getPlugin().getPluginPrefix() + ColorUtils.translateColorCodes(message));
     }
 
