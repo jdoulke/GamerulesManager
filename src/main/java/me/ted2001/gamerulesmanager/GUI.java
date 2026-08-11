@@ -18,6 +18,7 @@ import java.util.List;
 public class GUI {
 
     private static final Buttons button = new Buttons();
+    private static final int WORLD_ITEMS_PER_PAGE = 45;
 
     public static Inventory gameruleSetterGui(Player p, World world) {
         GuiInventoryHolder holder = new GuiInventoryHolder(GuiInventoryHolder.MenuType.GAMERULE_PAGE_1);
@@ -78,26 +79,71 @@ public class GUI {
         return gui;
     }
 
+    // Opens the last world-selector page used by this player, defaulting to the first page.
     public static Inventory guiBuilder(Player p) {
-        GuiInventoryHolder holder = new GuiInventoryHolder(GuiInventoryHolder.MenuType.WORLD_SELECTOR);
-        Inventory worldSelector = Bukkit.createInventory(holder, 36,
-                ChatColor.AQUA + "" + ChatColor.BOLD + "World Selector");
+        return guiBuilder(p, PlayerSessionManager.getWorldSelectorPage(p));
+    }
+
+    // Builds a world selector that grows naturally from 2 to 6 rows and paginates after 45 worlds.
+    public static Inventory guiBuilder(Player p, int requestedPage) {
+        List<World> worlds = Bukkit.getWorlds();
+
+        int totalPages = Math.max(1, (worlds.size() + WORLD_ITEMS_PER_PAGE - 1) / WORLD_ITEMS_PER_PAGE);
+        int page = Math.max(1, Math.min(requestedPage, totalPages));
+
+        // Remember the normalized page so returning from a gamerule menu opens the same world list page.
+        PlayerSessionManager.setWorldSelectorPage(p, page);
+
+        int startIndex = (page - 1) * WORLD_ITEMS_PER_PAGE;
+        int endIndex = Math.min(startIndex + WORLD_ITEMS_PER_PAGE, worlds.size());
+        int worldsOnPage = endIndex - startIndex;
+
+        // One full row is always reserved for navigation and the exit button.
+        int worldRows = Math.max(1, (worldsOnPage + 8) / 9);
+        int inventoryRows = Math.min(6, worldRows + 1);
+        int inventorySize = inventoryRows * 9;
+
+        GuiInventoryHolder holder = new GuiInventoryHolder(GuiInventoryHolder.MenuType.WORLD_SELECTOR, page);
+        String title = ChatColor.AQUA + "" + ChatColor.BOLD + "World Selector";
+        if (totalPages > 1) {
+            title += ChatColor.GRAY + " (" + page + "/" + totalPages + ")";
+        }
+
+        Inventory worldSelector = Bukkit.createInventory(holder, inventorySize, title);
         holder.setInventory(worldSelector);
 
-        List<World> worlds = Bukkit.getWorlds();
-        String worldType;
-        for (World world : worlds) {
-            worldType = world.getEnvironment().toString();
+        // Fill only the content rows; the final row is kept free for navigation controls.
+        int guiSlot = 0;
+        for (int i = startIndex; i < endIndex; i++) {
+            World world = worlds.get(i);
+            String worldType = world.getEnvironment().toString();
+            ItemStack worldItem = null;
+
             if (worldType.equalsIgnoreCase("NORMAL") || worldType.equalsIgnoreCase("CUSTOM")) {
-                worldSelector.addItem(worldCreator("NORMAL", world.getName()));
+                worldItem = worldCreator("NORMAL", world.getName());
             } else if (worldType.equalsIgnoreCase("NETHER")) {
-                worldSelector.addItem(worldCreator("NETHER", world.getName()));
+                worldItem = worldCreator("NETHER", world.getName());
             } else if (worldType.equalsIgnoreCase("THE_END")) {
-                worldSelector.addItem(worldCreator("END", world.getName()));
+                worldItem = worldCreator("END", world.getName());
+            }
+
+            if (worldItem != null) {
+                worldSelector.setItem(guiSlot, worldItem);
+                guiSlot++;
             }
         }
 
-        worldSelector.setItem(35, button.exitButton());
+        int controlRowStart = inventorySize - 9;
+
+        if (page > 1) {
+            worldSelector.setItem(controlRowStart, button.previousWorldPageButton());
+        }
+
+        if (page < totalPages) {
+            worldSelector.setItem(inventorySize - 2, button.nextWorldPageButton());
+        }
+
+        worldSelector.setItem(inventorySize - 1, button.exitButton());
         return worldSelector;
     }
 
