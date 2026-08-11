@@ -2,9 +2,9 @@
 
 # Ultimate Gamerules Manager
 
-Ultimate Gamerules Manager is a Minecraft server plugin for managing world gamerules through a simple inventory GUI.
+Ultimate Gamerules Manager is a Minecraft server plugin that allows server owners and administrators to manage world gamerules through a clean and simple GUI.
 
-Instead of remembering gamerule commands or switching between worlds manually, administrators can open one menu, select a world, inspect its gamerules, change values, copy settings between worlds, or restore them to Minecraft defaults.
+Select a world, browse its gamerules, change values, copy settings between worlds, or restore everything to Minecraft's defaults. All without manually typing gamerule commands.
 
 ---
 
@@ -15,12 +15,11 @@ Instead of remembering gamerule commands or switching between worlds manually, a
 | v5.x | Minecraft 26.1.x - 26.2.x | Java 25 |
 | v4.x | Minecraft 1.13 - 1.21 | Java 8+ |
 
-> **Important:** v5.x supports Minecraft 26.1.x through 26.2.x and requires Java 25.
+> **Important for v5.x:** GamerulesManager v5.x supports Minecraft **26.1.x through 26.2.x** and requires **Java 25**.
 >
-> Minimum supported version: **26.1.x**  
-> Latest tested version: **26.2.x**
+> Minecraft **26.1.x** is the minimum supported version for v5.x, while **26.2.x** is the latest tested release.
 >
-> Servers running Minecraft 1.13 - 1.21 should use the latest v4.x release instead.
+> If your server is running Minecraft **1.13 - 1.21**, use the latest v4.x version instead.
 
 ---
 
@@ -28,78 +27,42 @@ Instead of remembering gamerule commands or switching between worlds manually, a
 
 - Manage gamerules through an inventory GUI
 - Select the world you want to configure
-- View the current and default value of each gamerule
 - Toggle boolean gamerules with one click
 - Edit integer gamerules directly through chat
-- Cancel integer editing by typing `cancel`
-- Keep integer input private instead of broadcasting it to public chat
-- Copy gamerule values from one world and paste them into another
-- Reset a world's gamerules to their Minecraft default values
-- Process only gamerules that are available in the selected world
+- Cancel an integer edit at any time by typing `cancel`
+- Copy all gamerule values from one world
+- Paste copied gamerules into another world
+- Reset a world's gamerules to their default values
+- View the current value of every gamerule
+- View each gamerule's default value
 - Customize gamerule descriptions through `config.yml`
-- Customize the material used for each gamerule item
-- Configure messages used during integer value input
-- Keep selected worlds and copied gamerules isolated per player
+- Customize GUI display items through `config.yml`
+- Configure the messages used during integer value input
 - bStats support
 
 ---
 
 ## How It Works
 
-Run `/gamerule` to open the world selection menu.
+When you run `/gamerule`, a world selection menu opens. After selecting a world, the plugin opens the gamerule management GUI for that world.
 
-Choose a world and the plugin will open the Gamerule Manager for that world. Each gamerule is represented by an item containing its current value, description, and Minecraft default value.
+Each item represents a gamerule. Hover over an item to view useful information about that gamerule, including its current value, description, and default value.
 
-Only gamerules that are valid for the selected world are shown and processed. This also prevents experimental or feature-gated gamerules from being used in worlds where they are not available.
+Only gamerules available in the selected world are shown and processed.
+
+There are two gamerule types:
 
 ### Boolean Gamerules
 
-Boolean gamerules can be changed immediately from the GUI.
-
-Click the gamerule item to toggle its value between `true` and `false`. The item is refreshed after the change so the new value is visible straight away.
+Click the item to toggle the value between `true` and `false`.
 
 ### Integer Gamerules
 
-Integer gamerules use chat input.
+Click the item and the GUI will temporarily close. The plugin will ask you to enter the new value directly in chat.
 
-Click an integer gamerule and the inventory will close while the plugin waits for the new value. The prompt also shows Minecraft's default value for that gamerule.
+The prompt also shows the gamerule's default value. Type a valid integer to apply the new value, or type `cancel` to return without changing it.
 
-Example:
-
-```text
-Type the new integer value for random_tick_speed in chat. Default value: 3.
-Type cancel to go back without changing it.
-```
-
-The message containing the value is intercepted by the plugin and is not sent to other players.
-
-Enter a valid integer to apply the new value, or type:
-
-```text
-cancel
-```
-
-to return without changing anything.
-
-Invalid input can be retried. After two invalid attempts, the edit is cancelled automatically and the gamerule GUI is reopened.
-
----
-
-## Copy, Paste and Reset
-
-### Copy Gamerules
-
-Open a world and click **Copy Gamerules** to store its current gamerule values in your session.
-
-### Paste Gamerules
-
-Select another world and click **Paste Gamerules** to apply the copied values there.
-
-If a copied gamerule is not available in the destination world, it is skipped safely.
-
-### Reset Gamerules
-
-Click **Reset Gamerules** to restore all gamerules available in the selected world to their Minecraft default values.
+The value you enter is handled by the plugin and is not broadcast to public chat. Invalid input can be retried, and after two invalid attempts the edit is cancelled automatically.
 
 ---
 
@@ -130,11 +93,10 @@ Click **Reset Gamerules** to restore all gamerules available in the selected wor
 
 ## Installation
 
-1. Download the latest plugin `.jar`.
+1. Download the plugin `.jar` file.
 2. Place it inside your server's `plugins` folder.
-3. Restart the server.
-4. Run `/gamerule`.
-5. Select a world and start managing its gamerules.
+3. Restart your server.
+4. Use `/gamerule` to open the GUI.
 
 No configuration is required for basic usage.
 
@@ -142,7 +104,7 @@ No configuration is required for basic usage.
 
 ## Configuration
 
-The plugin uses `config.yml` for messages, gamerule descriptions, and GUI display items.
+The default `config.yml` includes gamerule descriptions, GUI display items, and configurable messages.
 
 ### Integer Input Messages
 
@@ -158,8 +120,6 @@ tooManyInvalid: "&cToo many invalid attempts. Gamerule change cancelled."
 
 ### Gamerule Descriptions
 
-Descriptions use Minecraft's snake_case gamerule names:
-
 ```yaml
 freeze_damage: "&7Whether players should take damage when freezing in powder snow."
 random_tick_speed: "&7How often random block ticks occur, such as crop growth and leaf decay."
@@ -168,8 +128,6 @@ players_sleeping_percentage: "&7The percentage of players that must sleep to ski
 
 ### Gamerule Display Items
 
-The material used for each gamerule can also be customized:
-
 ```yaml
 gameruleItems:
   freeze_damage: BLUE_ICE
@@ -177,22 +135,22 @@ gameruleItems:
   players_sleeping_percentage: WHITE_BED
 ```
 
-If a configured material is missing or invalid, the plugin uses `BOOK` as a fallback.
+If a configured material is missing or invalid, the plugin automatically uses `BOOK` as a fallback.
 
 ---
 
-## Updating from v4.x
+## Updating from v4.x to v5.x
 
-v5.x uses the gamerule names provided by modern Minecraft versions, which use snake_case keys.
+GamerulesManager v5.x is a breaking update.
 
-Before moving from v4.x to v5.x:
+Before updating:
 
-1. Make sure the server is running Minecraft 26.1.x or 26.2.x.
-2. Make sure the server is running Java 25.
-3. Back up the existing `config.yml`.
-4. Regenerate the config or migrate old camelCase gamerule names to snake_case.
+1. Make sure your server is running Minecraft **26.1.x or 26.2.x**.
+2. Make sure your server is running **Java 25**.
+3. Back up your old `config.yml`.
+4. Delete the old config file or manually migrate old camelCase gamerule names to the new snake_case format.
 
-Example:
+Example migration:
 
 ```yaml
 # v4.x
@@ -202,7 +160,7 @@ freezeDamage: "&7Whether the player should take damage when inside powder snow."
 freeze_damage: "&7Whether players should take damage when freezing in powder snow."
 ```
 
-Servers staying on Minecraft 1.13 - 1.21 should continue using the latest v4.x release.
+If your server is staying on Minecraft **1.13 - 1.21**, continue using the latest v4.x release.
 
 ---
 
