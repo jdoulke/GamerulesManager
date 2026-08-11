@@ -23,6 +23,7 @@ public class WorldSelectorListener implements Listener {
             return;
         }
 
+        // Prevent items from being moved while the world selector is open.
         e.setCancelled(true);
 
         if (!(e.getWhoClicked() instanceof Player player)) {
@@ -36,6 +37,20 @@ public class WorldSelectorListener implements Listener {
 
         String action = GuiItemData.getAction(clickedItem);
         if (action == null) {
+            return;
+        }
+
+        // Move to the next world-selector page while keeping the current page in the player's session.
+        if (action.equals("next_world_page")) {
+            player.playSound(player.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 1, 1);
+            player.openInventory(GUI.guiBuilder(player, holder.getPage() + 1));
+            return;
+        }
+
+        // Move back one page. guiBuilder also clamps the requested page if the world list changed meanwhile.
+        if (action.equals("previous_world_page")) {
+            player.playSound(player.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 1, 1);
+            player.openInventory(GUI.guiBuilder(player, holder.getPage() - 1));
             return;
         }
 
@@ -64,6 +79,8 @@ public class WorldSelectorListener implements Listener {
             return;
         }
 
+        // Remember which selector page this world came from so the Gamerule GUI Back button returns here.
+        PlayerSessionManager.setWorldSelectorPage(player, holder.getPage());
         PlayerSessionManager.setSelectedWorld(player, world);
 
         player.playSound(player.getLocation(), Sound.BLOCK_ANVIL_USE, 1, 1);
