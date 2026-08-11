@@ -42,10 +42,6 @@
                             <createDependencyReducedPom>false</createDependencyReducedPom>
                             <relocations>
                                 <relocation>
-                                    <pattern>net.wesjd.anvilgui</pattern>
-                                    <shadedPattern>me.ted2001.gamerulesmanager.anvilgui</shadedPattern>
-                                </relocation>
-                                <relocation>
                                     <pattern>org.bstats</pattern>
                                     <shadedPattern>me.ted2001.gamerulesmanager.bstats</shadedPattern>
                                 </relocation>
@@ -73,10 +69,6 @@
             <id>sonatype</id>
             <url>https://oss.sonatype.org/content/groups/public/</url>
         </repository>
-        <repository>
-            <id>mvn-wesjd-net</id>
-            <url>https://mvn.wesjd.net/</url>
-        </repository>
     </repositories>
 
     <dependencies>
@@ -90,12 +82,6 @@
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
             <version>24.0.1</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>net.wesjd</groupId>
-            <artifactId>anvilgui</artifactId>
-            <version>1.10.13-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
