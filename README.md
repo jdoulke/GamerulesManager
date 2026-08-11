@@ -26,7 +26,7 @@ If your server is running Minecraft 1.13 - 1.21, use the latest v4.x version of 
 - Manage gamerules through a clean inventory GUI
 - Select which world you want to configure
 - Toggle boolean gamerules with one click
-- Edit integer gamerules through an AnvilGUI input
+- Edit integer gamerules through private chat input
 - Copy gamerules from one world and paste them to another
 - Reset all gamerules of a world to their default values
 - Configurable gamerule descriptions
