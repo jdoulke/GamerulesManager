@@ -3,9 +3,17 @@ package me.ted2001.gamerulesmanager.Listeners;
 import me.ted2001.gamerulesmanager.GUI;
 import me.ted2001.gamerulesmanager.Utils.ColorUtils;
 import me.ted2001.gamerulesmanager.Utils.CopyGamerules;
+import me.ted2001.gamerulesmanager.Utils.GameRuleRegistryUtil;
 import me.ted2001.gamerulesmanager.Utils.GameruleCreator;
+import me.ted2001.gamerulesmanager.Utils.GuiInventoryHolder;
+import me.ted2001.gamerulesmanager.Utils.GuiItemData;
 import me.ted2001.gamerulesmanager.Utils.PlayerSessionManager;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.GameRule;
+import org.bukkit.Registry;
+import org.bukkit.Sound;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -14,17 +22,14 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static me.ted2001.gamerulesmanager.GUI.*;
-import static me.ted2001.gamerulesmanager.GamerulesManager.*;
+import static me.ted2001.gamerulesmanager.GamerulesManager.getPlugin;
 import static org.bukkit.Bukkit.getServer;
 
 @SuppressWarnings({"ConstantConditions", "rawtypes", "unchecked"})
@@ -38,94 +43,78 @@ public class GUIListener implements Listener {
 
     @EventHandler
     public void onGuiClick(InventoryClickEvent e) {
-
-        try {
-            // Handle clicks on the first Gamerule Manager page.
-            if (e.getView().getTitle().contains(ChatColor.DARK_PURPLE + "Gamerule Manager" + ChatColor.AQUA + " ")) {
-                // Prevent players from moving GUI items into or out of the inventory.
-                e.setCancelled(true);
-                Inventory gui = e.getClickedInventory();
-                Player p = (Player) e.getWhoClicked();
-                if (e.getCurrentItem() == null)
-                    return;
-                World selectedWorld = PlayerSessionManager.getSelectedWorld(p);
-
-                // A selected world is required before any gamerule can be edited.
-                if (selectedWorld == null) {
-                    p.sendMessage(getPlugin().getPluginPrefix() + ChatColor.RED + "No world selected.");
-                    p.openInventory(GUI.guiBuilder(p));
-                    return;
-                }
-                GameruleCreator creator = new GameruleCreator();
-                String clickedItem = ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName());
-                boolean flag = true;
-
-                // First page contains gamerules stored in slots/indexes 0-35.
-                for(int i = 0; i < 36; i++){
-                    if (clickedItem.equalsIgnoreCase(gamerules[i])){
-                        if(GameRule.getByName(gamerules[i]).getType() == Boolean.class){
-                            // Boolean gamerules can be toggled immediately with a single click.
-                            GameRule<Boolean> tempGamerule = (GameRule<Boolean>) GameRule.getByName(gamerules[i]);
-                            booleanGameruleSet(tempGamerule, selectedWorld.getGameRuleValue(tempGamerule), selectedWorld,p);
-                            gui.setItem(gamerulesSlots.get(gamerules[i]), creator.GamerulesCreator(gamerules[i], selectedWorld));
-                            flag = false;
-                            break;
-                        }else {
-                            // Integer gamerules require a value from the player's next chat message.
-                            valueReceiver(p, gamerules[i], 1);
-                            flag = false;
-                            break;
-                        }
-                    }
-                }if(flag)
-                    // If no gamerule was clicked, check whether one of the navigation/action buttons was used.
-                    EssentialsButtons(e, p, selectedWorld);
-            }
-
-            // Handle clicks on the second Gamerule Manager page.
-            if (e.getView().getTitle().contains(ChatColor.DARK_PURPLE + "Gamerule Manager Page 2" + ChatColor.AQUA + " ")){
-                // Prevent players from moving GUI items into or out of the inventory.
-                e.setCancelled(true);
-                Inventory gui = e.getClickedInventory();
-                Player p = (Player) e.getWhoClicked();
-                World selectedWorld = PlayerSessionManager.getSelectedWorld(p);
-
-                // A selected world is required before any gamerule can be edited.
-                if (selectedWorld == null) {
-                    p.sendMessage(getPlugin().getPluginPrefix() + ChatColor.RED + "No world selected.");
-                    p.openInventory(GUI.guiBuilder(p));
-                    return;
-                }
-                GameruleCreator creator = new GameruleCreator();
-                if (e.getCurrentItem() == null)
-                    return;
-                String clickedItem = ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName());
-                boolean flag = true;
-
-                // Second page contains the remaining gamerules starting from index 36.
-                for(int i = 36; i < gamerules.length; i++){
-                    if (clickedItem.equalsIgnoreCase(gamerules[i])){
-                        if(GameRule.getByName(gamerules[i]).getType() == Boolean.class){
-                            // Boolean gamerules can be toggled immediately with a single click.
-                            GameRule<Boolean> tempGamerule = (GameRule<Boolean>) GameRule.getByName(gamerules[i]);
-                            booleanGameruleSet(tempGamerule, selectedWorld.getGameRuleValue(tempGamerule), selectedWorld,p);
-                            gui.setItem(gamerulesSlots.get(gamerules[i])-36, creator.GamerulesCreator(gamerules[i], selectedWorld));
-                            flag = false;
-                            break;
-                        }else {
-                            // Remember that this edit originated from page 2 so the same page can be reopened later.
-                            valueReceiver(p, gamerules[i], 2);
-                            flag = false;
-                            break;
-                        }
-                    }
-                }if(flag)
-                    // If no gamerule was clicked, check whether one of the navigation/action buttons was used.
-                    EssentialsButtons(e, p, selectedWorld);
-            }
-        } catch (NullPointerException exception) {
-            getServer().getLogger().info("An error has occurred." + exception.getMessage());
+        if (!(e.getView().getTopInventory().getHolder() instanceof GuiInventoryHolder holder)) {
+            return;
         }
+
+        if (holder.getMenuType() != GuiInventoryHolder.MenuType.GAMERULE_PAGE_1
+                && holder.getMenuType() != GuiInventoryHolder.MenuType.GAMERULE_PAGE_2) {
+            return;
+        }
+
+        // Prevent players from moving items while a GamerulesManager GUI is open.
+        e.setCancelled(true);
+
+        if (!(e.getWhoClicked() instanceof Player p)) {
+            return;
+        }
+
+        ItemStack clickedItem = e.getCurrentItem();
+        if (clickedItem == null) {
+            return;
+        }
+
+        World selectedWorld = PlayerSessionManager.getSelectedWorld(p);
+        if (selectedWorld == null) {
+            p.sendMessage(getPlugin().getPluginPrefix() + ChatColor.RED + "No world selected.");
+            p.openInventory(GUI.guiBuilder(p));
+            return;
+        }
+
+        String action = GuiItemData.getAction(clickedItem);
+        if (action == null) {
+            return;
+        }
+
+        int page = holder.getMenuType() == GuiInventoryHolder.MenuType.GAMERULE_PAGE_2 ? 2 : 1;
+
+        if (action.equals("gamerule")) {
+            handleGameruleClick(e, p, selectedWorld, page, clickedItem);
+            return;
+        }
+
+        handleActionButton(action, p, selectedWorld);
+    }
+
+    // Handles a gamerule item independently from its visible display name.
+    private void handleGameruleClick(InventoryClickEvent e, Player player, World selectedWorld, int page, ItemStack clickedItem) {
+        String gameruleName = GuiItemData.getValue(clickedItem);
+        if (gameruleName == null) {
+            return;
+        }
+
+        GameRule<?> gamerule = GameRuleRegistryUtil.getByName(gameruleName);
+        if (gamerule == null) {
+            player.sendMessage(getPlugin().getPluginPrefix() + ChatColor.RED + "Unknown gamerule: " + ChatColor.WHITE + gameruleName);
+            player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
+            return;
+        }
+
+        if (gamerule.getType() == Boolean.class) {
+            GameRule<Boolean> booleanRule = (GameRule<Boolean>) gamerule;
+            booleanGameruleSet(booleanRule, selectedWorld.getGameRuleValue(booleanRule), selectedWorld, player);
+
+            // Refresh only the clicked GUI slot so its lore immediately shows the new value.
+            int rawSlot = e.getRawSlot();
+            Inventory topInventory = e.getView().getTopInventory();
+            if (rawSlot >= 0 && rawSlot < topInventory.getSize()) {
+                topInventory.setItem(rawSlot, new GameruleCreator().GamerulesCreator(gameruleName, selectedWorld));
+            }
+            return;
+        }
+
+        // Integer gamerules are edited through the player's next chat message.
+        valueReceiver(player, gameruleName, page);
     }
 
     // Starts the chat-based input flow for an integer gamerule.
@@ -139,7 +128,7 @@ public class GUIListener implements Listener {
             return;
         }
 
-        GameRule<?> rule = GameRule.getByName(gamerule);
+        GameRule<?> rule = GameRuleRegistryUtil.getByName(gamerule);
 
         // Protect against a gamerule name that is no longer available in the current server version.
         if (rule == null) {
@@ -241,7 +230,6 @@ public class GUIListener implements Listener {
         Bukkit.getScheduler().runTask(getPlugin(), () -> applyIntegerGamerule(player, pendingInput, value));
     }
 
-    @SuppressWarnings({"rawtypes", "unchecked"})
     // Applies the parsed integer gamerule value on the main server thread.
     private void applyIntegerGamerule(Player player, PendingValueInput pendingInput, int value) {
         // The scheduled task may run after the player disconnects, so do not reopen a GUI for an offline player.
@@ -250,7 +238,7 @@ public class GUIListener implements Listener {
         }
 
         // Resolve the gamerule again before applying it instead of assuming the stored name is still valid.
-        GameRule<?> rule = GameRule.getByName(pendingInput.gamerule());
+        GameRule<?> rule = GameRuleRegistryUtil.getByName(pendingInput.gamerule());
         if (rule == null || rule.getType() != Integer.class) {
             player.sendMessage(getPlugin().getPluginPrefix() + ChatColor.RED + "That gamerule is no longer available.");
             player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
@@ -302,21 +290,15 @@ public class GUIListener implements Listener {
         p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
     }
 
-    // Restore every gamerule in the selected world to Minecraft's default value.
+    // Restore every registered gamerule in the selected world to Minecraft's default value.
     private void resetGamerules(World world){
-        String[] gamerulesNames = world.getGameRules();
-        for (String name : gamerulesNames) {
-            GameRule gamerule;
-
-            // Boolean and integer gamerules must be restored using values of their matching Java type.
-            if (GameRule.getByName(name).getType() == Boolean.class) {
-                gamerule = GameRule.getByName(name);
-                Boolean defaultValue = (Boolean) world.getGameRuleDefault(gamerule);
-                world.setGameRule(gamerule, defaultValue);
-            } else if (GameRule.getByName(name).getType() == Integer.class) {
-                gamerule = GameRule.getByName(name);
-                int defaultValue = (Integer) world.getGameRuleDefault(gamerule);
-                world.setGameRule(gamerule, defaultValue);
+        for (GameRule<?> gamerule : Registry.GAME_RULE) {
+            if (gamerule.getType() == Boolean.class) {
+                GameRule<Boolean> booleanRule = (GameRule<Boolean>) gamerule;
+                world.setGameRule(booleanRule, world.getGameRuleDefault(booleanRule));
+            } else if (gamerule.getType() == Integer.class) {
+                GameRule<Integer> integerRule = (GameRule<Integer>) gamerule;
+                world.setGameRule(integerRule, world.getGameRuleDefault(integerRule));
             }
         }
     }
@@ -325,142 +307,95 @@ public class GUIListener implements Listener {
     private void copyGamerules(Player player, World world) {
         List<CopyGamerules> copiedRules = new ArrayList<>();
 
-        String[] gamerulesNames = world.getGameRules();
-        Arrays.sort(gamerulesNames);
-
-        for (String gamerule : gamerulesNames) {
-            GameRule<?> rule = GameRule.getByName(gamerule);
-
-            // Ignore any name that cannot be resolved to a Bukkit GameRule.
-            if (rule == null) {
-                continue;
+        for (GameRule<?> gamerule : GameRuleRegistryUtil.getSortedGameRules()) {
+            Object currentValue = world.getGameRuleValue(gamerule);
+            if (currentValue != null) {
+                copiedRules.add(new CopyGamerules(GameRuleRegistryUtil.getName(gamerule), currentValue.toString()));
             }
-
-            String value = world.getGameRuleValue(rule).toString();
-            copiedRules.add(new CopyGamerules(gamerule, value));
         }
 
         PlayerSessionManager.setCopiedGamerules(player, world, copiedRules);
     }
 
-    @SuppressWarnings({"rawtypes", "unchecked"})
-    // Handles navigation and utility buttons that are not gamerule entries themselves.
-    private void EssentialsButtons(InventoryClickEvent e, Player p, World selectedWorld) {
-        ItemStack clickedItem = e.getCurrentItem();
-
-        // Ignore empty slots or items without metadata/display names.
-        if (clickedItem == null || !clickedItem.hasItemMeta()) {
-            return;
+    // Handles navigation and utility buttons using internal action IDs rather than visible display names.
+    private void handleActionButton(String action, Player p, World selectedWorld) {
+        switch (action) {
+            case "back" -> {
+                p.openInventory(GUI.guiBuilder(p));
+                p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_USE, 1, 1);
+            }
+            case "exit" -> {
+                p.closeInventory();
+                p.playSound(p.getLocation(), Sound.ENTITY_VILLAGER_CELEBRATE, 1, 1);
+            }
+            case "next_page" -> {
+                p.playSound(p.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 1, 1);
+                p.openInventory(GUI.gameruleSetterGuiPage2(p));
+            }
+            case "previous_page" -> {
+                p.playSound(p.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 1, 1);
+                p.openInventory(GUI.gameruleSetterGui(p, selectedWorld));
+            }
+            case "reset" -> {
+                resetGamerules(selectedWorld);
+                p.openInventory(GUI.gameruleSetterGui(p, selectedWorld));
+                p.playSound(p.getLocation(), Sound.BLOCK_ENCHANTMENT_TABLE_USE, 1, 1);
+            }
+            case "copy" -> {
+                copyGamerules(p, selectedWorld);
+                p.openInventory(GUI.guiBuilder(p));
+                p.playSound(p.getLocation(), Sound.UI_CARTOGRAPHY_TABLE_TAKE_RESULT, 1, 1);
+            }
+            case "paste" -> pasteGamerules(p, selectedWorld);
+            default -> {
+                // Unknown internal GUI action: ignore it safely.
+            }
         }
+    }
 
-        ItemMeta itemMeta = clickedItem.getItemMeta();
-
-        if (itemMeta == null || !itemMeta.hasDisplayName()) {
-            return;
-        }
-
-        String displayName = itemMeta.getDisplayName();
-
-        // Utility actions also require an active selected world.
-        if (selectedWorld == null) {
-            p.sendMessage(getPlugin().getPluginPrefix() + ChatColor.RED + "No world selected.");
+    // Pastes the gamerule snapshot stored in this player's session into the selected world.
+    private void pasteGamerules(Player p, World selectedWorld) {
+        if (!PlayerSessionManager.hasCopiedGamerules(p)) {
+            p.sendMessage(getPlugin().getPluginPrefix()
+                    + ChatColor.RED + "" + ChatColor.BOLD + "You didn't copy any world.");
             p.playSound(p.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
-            p.openInventory(GUI.guiBuilder(p));
             return;
         }
 
-        // Return from the gamerule list to the world-selection GUI.
-        if (displayName.equals(ChatColor.RED + "Get Back in World Selection.")) {
-            p.openInventory(GUI.guiBuilder(p));
-            p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_USE, 1, 1);
-            return;
-        }
+        for (CopyGamerules copiedGamerule : PlayerSessionManager.getCopiedGamerules(p)) {
+            GameRule gamerule = GameRuleRegistryUtil.getByName(copiedGamerule.getGameRule());
 
-        // Close the GUI completely.
-        if (displayName.equals(ChatColor.RED + "EXIT")) {
-            p.closeInventory();
-            p.playSound(p.getLocation(), Sound.ENTITY_VILLAGER_CELEBRATE, 1, 1);
-            return;
-        }
-
-        // Navigate from page 1 to page 2.
-        if (displayName.equals(ChatColor.RED + "Next page with Gamerules.")) {
-            p.playSound(p.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 1, 1);
-            p.openInventory(GUI.gameruleSetterGuiPage2(p));
-            return;
-        }
-
-        // Navigate from page 2 back to page 1.
-        if (displayName.equals(ChatColor.RED + "Previous page with Gamerules.")) {
-            p.playSound(p.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 1, 1);
-            p.openInventory(GUI.gameruleSetterGui(p, selectedWorld));
-            return;
-        }
-
-        // Restore all gamerules in this world to their Minecraft defaults.
-        if (displayName.equals(ChatColor.RED + "Reset all " + ChatColor.YELLOW + "Gamerules")) {
-            resetGamerules(selectedWorld);
-            p.openInventory(GUI.gameruleSetterGui(p, selectedWorld));
-            p.playSound(p.getLocation(), Sound.BLOCK_ENCHANTMENT_TABLE_USE, 1, 1);
-            return;
-        }
-
-        // Copy every gamerule and its current value from the selected world into the player's session.
-        if (displayName.equals(ChatColor.DARK_BLUE + "Copy " + ChatColor.YELLOW + "Gamerules")) {
-            copyGamerules(p, selectedWorld);
-            p.openInventory(GUI.guiBuilder(p));
-            p.playSound(p.getLocation(), Sound.UI_CARTOGRAPHY_TABLE_TAKE_RESULT, 1, 1);
-            return;
-        }
-
-        // Paste the previously copied gamerule values into the currently selected world.
-        if (displayName.equals(ChatColor.DARK_RED + "Paste " + ChatColor.YELLOW + "Gamerules")) {
-            // Do not attempt a paste until the player has copied gamerules from another world.
-            if (!PlayerSessionManager.hasCopiedGamerules(p)) {
-                p.sendMessage(getPlugin().getPluginPrefix()
-                        + ChatColor.RED + "" + ChatColor.BOLD + "You didn't copy any world.");
-                p.playSound(p.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
-                return;
+            if (gamerule == null) {
+                continue;
             }
 
-            for (CopyGamerules copiedGamerule : PlayerSessionManager.getCopiedGamerules(p)) {
+            String value = copiedGamerule.getValue();
 
-                GameRule gamerule = GameRule.getByName(copiedGamerule.getGameRule());
-
-                // Skip copied entries that no longer resolve to a valid gamerule.
-                if (gamerule == null) {
-                    continue;
+            if (gamerule.getType() == Integer.class) {
+                try {
+                    selectedWorld.setGameRule(gamerule, Integer.parseInt(value));
+                } catch (NumberFormatException ignored) {
+                    getServer().getLogger().warning("Could not parse integer value for gamerule: "
+                            + copiedGamerule.getGameRule());
                 }
-
-                String value = copiedGamerule.getValue();
-
-                // Restore each copied value using the type expected by the gamerule.
-                if (gamerule.getType() == Integer.class) {
-                    try {
-                        selectedWorld.setGameRule(gamerule, Integer.parseInt(value));
-                    } catch (NumberFormatException ignored) {
-                        getServer().getLogger().warning("Could not parse integer value for gamerule: "
-                                + copiedGamerule.getGameRule());
-                    }
-                } else if (gamerule.getType() == Boolean.class) {
-                    selectedWorld.setGameRule(gamerule, Boolean.parseBoolean(value));
-                }
+            } else if (gamerule.getType() == Boolean.class) {
+                selectedWorld.setGameRule(gamerule, Boolean.parseBoolean(value));
             }
+        }
 
-            // Refresh the GUI and notify the player which worlds were involved in the copy/paste operation.
-            p.playSound(p.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 1, 1);
-            p.openInventory(GUI.gameruleSetterGui(p, selectedWorld));
+        p.playSound(p.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 1, 1);
+        p.openInventory(GUI.gameruleSetterGui(p, selectedWorld));
 
+        World copiedFrom = PlayerSessionManager.getCopiedFromWorld(p);
+        if (copiedFrom != null) {
             p.sendMessage(getPlugin().getPluginPrefix()
                     + ChatColor.YELLOW + "You copied all "
                     + ChatColor.AQUA + "Gamerules "
                     + ChatColor.YELLOW + "from "
-                    + ChatColor.BLUE + PlayerSessionManager.getCopiedFromWorld(p).getName()
+                    + ChatColor.BLUE + copiedFrom.getName()
                     + ChatColor.YELLOW + " to "
                     + ChatColor.RED + selectedWorld.getName()
                     + ChatColor.YELLOW + ".");
-
-            return;
         }
     }
 
