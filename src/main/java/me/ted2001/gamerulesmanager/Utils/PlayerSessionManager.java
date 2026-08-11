@@ -16,6 +16,9 @@ public final class PlayerSessionManager {
     private static final Map<UUID, World> copiedFromWorlds = new HashMap<>();
     private static final Map<UUID, List<CopyGamerules>> copiedGamerules = new HashMap<>();
 
+    // Remembers the world-selector page so Back returns players to the page they came from.
+    private static final Map<UUID, Integer> worldSelectorPages = new HashMap<>();
+
     private PlayerSessionManager() {
     }
 
@@ -25,6 +28,14 @@ public final class PlayerSessionManager {
 
     public static World getSelectedWorld(Player player) {
         return selectedWorlds.get(player.getUniqueId());
+    }
+
+    public static void setWorldSelectorPage(Player player, int page) {
+        worldSelectorPages.put(player.getUniqueId(), Math.max(1, page));
+    }
+
+    public static int getWorldSelectorPage(Player player) {
+        return worldSelectorPages.getOrDefault(player.getUniqueId(), 1);
     }
 
     public static void setCopiedGamerules(Player player, World sourceWorld, List<CopyGamerules> gamerules) {
@@ -50,5 +61,6 @@ public final class PlayerSessionManager {
         selectedWorlds.remove(uuid);
         copiedFromWorlds.remove(uuid);
         copiedGamerules.remove(uuid);
+        worldSelectorPages.remove(uuid);
     }
 }
