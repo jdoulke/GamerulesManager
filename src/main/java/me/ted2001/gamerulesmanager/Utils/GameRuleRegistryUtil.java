@@ -30,6 +30,7 @@ public final class GameRuleRegistryUtil {
 
     public static List<GameRule<?>> getSortedGameRules() {
         return Registry.GAME_RULE.stream()
+                .map(gamerule -> (GameRule<?>) gamerule)
                 .sorted(Comparator.comparing(GameRuleRegistryUtil::getName))
                 .toList();
     }
