@@ -6,9 +6,11 @@ import me.ted2001.gamerulesmanager.Listeners.GUIListener;
 import me.ted2001.gamerulesmanager.Listeners.UpdateChecker;
 import me.ted2001.gamerulesmanager.Listeners.WorldSelectorListener;
 import me.ted2001.gamerulesmanager.Utils.ColorUtils;
+import me.ted2001.gamerulesmanager.Utils.GameRuleRegistryUtil;
 import me.ted2001.gamerulesmanager.Utils.GameruleDisplayItem;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.GameRule;
+import org.bukkit.Registry;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -32,10 +34,9 @@ public final class GamerulesManager extends JavaPlugin {
         //set plugin prefix
         prefix = ColorUtils.translateColorCodes(Objects.requireNonNull(getPlugin().getConfig().getString("pluginPrefix"))) + " ";
         //set gamerules display items
-        GameRule<?>[] gamerules = GameRule.values();
         GameruleDisplayItem displayItem = new GameruleDisplayItem();
-        for (GameRule<?> gamerule : gamerules) {
-            gamerulesDisplayItems.put(gamerule, displayItem.gameruleDisplayItem(gamerule.getName()));
+        for (GameRule<?> gamerule : Registry.GAME_RULE) {
+            gamerulesDisplayItems.put(gamerule, displayItem.gameruleDisplayItem(GameRuleRegistryUtil.getName(gamerule)));
         }
         //register command and listeners
         Objects.requireNonNull(getCommand("gamerule")).setExecutor(new GuiCommand());
@@ -74,10 +75,9 @@ public final class GamerulesManager extends JavaPlugin {
         this.prefix = ColorUtils.translateColorCodes(Objects.requireNonNull(getPlugin().getConfig().getString("pluginPrefix"))) + " ";
         gamerulesDisplayItems.clear();
 
-        GameRule<?>[] gamerules = GameRule.values();
         GameruleDisplayItem displayItem = new GameruleDisplayItem();
-        for (GameRule<?> gamerule : gamerules) {
-            gamerulesDisplayItems.put(gamerule, displayItem.gameruleDisplayItem(gamerule.getName()));
+        for (GameRule<?> gamerule : Registry.GAME_RULE) {
+            gamerulesDisplayItems.put(gamerule, displayItem.gameruleDisplayItem(GameRuleRegistryUtil.getName(gamerule)));
         }
 
     }
