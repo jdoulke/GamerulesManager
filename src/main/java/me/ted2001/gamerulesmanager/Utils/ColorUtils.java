@@ -2,36 +2,54 @@ package me.ted2001.gamerulesmanager.Utils;
 
 import org.bukkit.ChatColor;
 
-
 public class ColorUtils {
 
-    static public final String WITH_DELIMITER = "((?<=%1$s)|(?=%1$s))";
-
-    /**
-     * @param text The string of text to apply color/effects to
-     * @return Returns a string of text with color/effects applied
-     */
-    public static String translateColorCodes(String text){
-
-        String[] texts = text.split(String.format(WITH_DELIMITER, "&"));
-
-        StringBuilder finalText = new StringBuilder();
-
-        for (int i = 0; i < texts.length; i++){
-            if (texts[i].equalsIgnoreCase("&")){
-                //get the next string
-                i++;
-                if (texts[i].charAt(0) == '#'){
-                    finalText.append(net.md_5.bungee.api.ChatColor.of(texts[i].substring(0, 7)) + texts[i].substring(7));
-                }else{
-                    finalText.append(ChatColor.translateAlternateColorCodes('&', "&" + texts[i]));
-                }
-            }else{
-                finalText.append(texts[i]);
-            }
-        }
-
-        return finalText.toString();
+    private ColorUtils() {
     }
 
+    /**
+     * Applies legacy (&a, &l, etc.) and hex (&#RRGGBB) color codes.
+     * Malformed color codes are preserved as plain text instead of throwing an exception.
+     *
+     * @param text the text to colorize
+     * @return the colorized text
+     */
+    public static String translateColorCodes(String text) {
+        if (text == null || text.isEmpty()) {
+            return text;
+        }
+
+        StringBuilder result = new StringBuilder(text.length());
+
+        for (int i = 0; i < text.length(); i++) {
+            char current = text.charAt(i);
+
+            if (current != '&' || i + 1 >= text.length()) {
+                result.append(current);
+                continue;
+            }
+
+            // Hex format: &#RRGGBB
+            if (text.charAt(i + 1) == '#' && i + 7 < text.length()) {
+                String hex = text.substring(i + 2, i + 8);
+                if (hex.matches("[0-9a-fA-F]{6}")) {
+                    result.append(net.md_5.bungee.api.ChatColor.of("#" + hex));
+                    i += 7;
+                    continue;
+                }
+            }
+
+            char colorCode = text.charAt(i + 1);
+            if (ChatColor.getByChar(colorCode) != null) {
+                result.append(ChatColor.COLOR_CHAR).append(Character.toLowerCase(colorCode));
+                i++;
+                continue;
+            }
+
+            // Unknown or incomplete code: keep the '&' as normal text.
+            result.append(current);
+        }
+
+        return result.toString();
+    }
 }
