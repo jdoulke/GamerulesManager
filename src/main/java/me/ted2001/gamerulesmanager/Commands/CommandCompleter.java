@@ -11,25 +11,24 @@ import java.util.Collections;
 import java.util.List;
 
 public class CommandCompleter implements TabCompleter {
-    List<String> results = new ArrayList<>();
+
     @Override
-    public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        if(args.length ==1){
-            if(command.getLabel().equalsIgnoreCase("gamerule")){
-                if(sender.hasPermission("gamerulemanager.reload"))
-                    results.add("reload");
-            }
+    public List<String> onTabComplete(@NotNull CommandSender sender,
+                                      @NotNull Command command,
+                                      @NotNull String label,
+                                      @NotNull String[] args) {
+        if (args.length != 1 || !command.getName().equalsIgnoreCase("gamerule")) {
+            return Collections.emptyList();
         }
-        return sortedResults(args[0]);
 
-    }
+        List<String> options = new ArrayList<>();
+        if (sender.hasPermission("gamerulemanager.reload")) {
+            options.add("reload");
+        }
 
-    public List < String > sortedResults(String arg) {
-        final List<String> completions = new ArrayList<>();
-        StringUtil.copyPartialMatches(arg, results, completions);
+        List<String> completions = new ArrayList<>();
+        StringUtil.copyPartialMatches(args[0], options, completions);
         Collections.sort(completions);
-        results.clear();
-        results.addAll(completions);
-        return results;
+        return completions;
     }
 }

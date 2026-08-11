@@ -1,10 +1,11 @@
 package me.ted2001.gamerulesmanager.Listeners;
 
 import me.ted2001.gamerulesmanager.GUI;
+import me.ted2001.gamerulesmanager.Utils.GuiInventoryHolder;
+import me.ted2001.gamerulesmanager.Utils.GuiItemData;
 import me.ted2001.gamerulesmanager.Utils.PlayerSessionManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -12,54 +13,49 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 public class WorldSelectorListener implements Listener {
 
     @EventHandler
     public void onGuiClick(InventoryClickEvent e) {
-        if (!e.getView().getTitle().equals(ChatColor.AQUA + "" + ChatColor.BOLD + "World Selector")) {
+        if (!(e.getView().getTopInventory().getHolder() instanceof GuiInventoryHolder holder)
+                || holder.getMenuType() != GuiInventoryHolder.MenuType.WORLD_SELECTOR) {
             return;
         }
 
         e.setCancelled(true);
 
-        if (!(e.getWhoClicked() instanceof Player)) {
+        if (!(e.getWhoClicked() instanceof Player player)) {
             return;
         }
-
-        Player player = (Player) e.getWhoClicked();
 
         ItemStack clickedItem = e.getCurrentItem();
-
-        if (clickedItem == null || !clickedItem.hasItemMeta()) {
+        if (clickedItem == null) {
             return;
         }
 
-        ItemMeta itemMeta = clickedItem.getItemMeta();
-
-        if (itemMeta == null || !itemMeta.hasDisplayName()) {
+        String action = GuiItemData.getAction(clickedItem);
+        if (action == null) {
             return;
         }
 
-        String displayName = itemMeta.getDisplayName();
-
-        if (displayName.equals(ChatColor.RED + "EXIT")) {
+        if (action.equals("exit")) {
             PlayerSessionManager.clear(player);
             player.closeInventory();
             player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_CELEBRATE, 1, 1);
             return;
         }
 
-        Material clickedType = clickedItem.getType();
-
-        if (clickedType != Material.GRASS_BLOCK
-                && clickedType != Material.NETHERRACK
-                && clickedType != Material.END_STONE) {
+        if (!action.equals("world")) {
             return;
         }
 
-        String worldName = ChatColor.stripColor(displayName);
+        // The world name is stored internally on the GUI item, so visible names can change safely later.
+        String worldName = GuiItemData.getValue(clickedItem);
+        if (worldName == null) {
+            return;
+        }
+
         World world = Bukkit.getServer().getWorld(worldName);
 
         if (world == null) {

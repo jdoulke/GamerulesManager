@@ -23,7 +23,7 @@ public class GameruleCreator {
             return null;
         }
 
-        GameRule<?> tempGamerule = GameRule.getByName(gamerule);
+        GameRule<?> tempGamerule = GameRuleRegistryUtil.getByName(gamerule);
 
         if (tempGamerule == null) {
             getServer().getLogger().warning("Gamerule " + gamerule + " does not exist!");
@@ -51,6 +51,9 @@ public class GameruleCreator {
                 ItemFlag.HIDE_ATTRIBUTES,
                 ItemFlag.HIDE_DESTROYS
         );
+
+        // Store the gamerule internally so click handling never depends on the visible display name.
+        GuiItemData.setAction(itemMeta, "gamerule", gamerule);
 
         List<String> lore = new ArrayList<>();
 
@@ -105,6 +108,6 @@ public class GameruleCreator {
     }
 
     private String color(String text) {
-        return ChatColor.translateAlternateColorCodes('&', text);
+        return ColorUtils.translateColorCodes(text);
     }
 }
