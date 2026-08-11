@@ -52,7 +52,7 @@ public class GUIListener implements Listener {
 
                 // A selected world is required before any gamerule can be edited.
                 if (selectedWorld == null) {
-                    sendConfiguredMessage(p, "noWorldSelected", "&cNo world selected.");
+                    p.sendMessage(getPlugin().getPluginPrefix() + ChatColor.RED + "No world selected.");
                     p.openInventory(GUI.guiBuilder(p));
                     return;
                 }
@@ -92,7 +92,7 @@ public class GUIListener implements Listener {
 
                 // A selected world is required before any gamerule can be edited.
                 if (selectedWorld == null) {
-                    sendConfiguredMessage(p, "noWorldSelected", "&cNo world selected.");
+                    p.sendMessage(getPlugin().getPluginPrefix() + ChatColor.RED + "No world selected.");
                     p.openInventory(GUI.guiBuilder(p));
                     return;
                 }
@@ -134,7 +134,7 @@ public class GUIListener implements Listener {
 
         // The selected world is stored because the GUI closes while the player types the value.
         if (world == null) {
-            sendConfiguredMessage(p, "noWorldSelected", "&cNo world selected.");
+            p.sendMessage(getPlugin().getPluginPrefix() + ChatColor.RED + "No world selected.");
             p.openInventory(GUI.guiBuilder(p));
             return;
         }
@@ -143,14 +143,14 @@ public class GUIListener implements Listener {
 
         // Protect against a gamerule name that is no longer available in the current server version.
         if (rule == null) {
-            sendConfiguredMessage(p, "integerInputUnknownRule", "&cUnknown gamerule: &f%gamerule%", gamerule);
+            p.sendMessage(getPlugin().getPluginPrefix() + ChatColor.RED + "Unknown gamerule: " + ChatColor.WHITE + gamerule);
             p.playSound(p.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
             return;
         }
 
         // Chat input is only required for integer gamerules; booleans are handled directly by the GUI click.
         if (rule.getType() != Integer.class) {
-            sendConfiguredMessage(p, "integerInputNotInteger", "&cThis gamerule is not an integer gamerule.");
+            p.sendMessage(getPlugin().getPluginPrefix() + ChatColor.RED + "This gamerule is not an integer gamerule.");
             p.playSound(p.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
             return;
         }
@@ -165,12 +165,12 @@ public class GUIListener implements Listener {
         // Ask the player for the new value. This message is configurable for localization.
         sendConfiguredMessage(
                 p,
-                "integerInputPrompt",
-                "&eType the new integer value for &b%gamerule%&e in chat. &7Default value: &f%default_value%&e. Your message will not be sent to other players.",
+                "valuePrompt",
+                "&eType the new integer value for &b%gamerule%&e in chat. &7Default value: &f%default_value%&e.",
                 gamerule,
                 String.valueOf(defaultValue)
         );
-        sendConfiguredMessage(p, "integerInputCancelHint", "&7Type &ccancel&7 to go back without changing it.");
+        sendConfiguredMessage(p, "cancelHint", "&7Type &ccancel&7 to go back without changing it.");
     }
 
     @EventHandler
@@ -195,7 +195,7 @@ public class GUIListener implements Listener {
                     return;
                 }
 
-                sendConfiguredMessage(player, "integerInputCancelled", "&eGamerule change cancelled.");
+                sendConfiguredMessage(player, "changeCancelled", "&eGamerule change cancelled.");
                 reopenGamerulePage(player, pendingInput);
             });
             return;
@@ -216,7 +216,7 @@ public class GUIListener implements Listener {
                         return;
                     }
 
-                    sendConfiguredMessage(player, "integerInputTooManyInvalid", "&cToo many invalid attempts. Gamerule change cancelled and chat input restored.");
+                    sendConfiguredMessage(player, "tooManyInvalid", "&cToo many invalid attempts. Gamerule change cancelled.");
                     player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
                     reopenGamerulePage(player, pendingInput);
                 });
@@ -230,7 +230,7 @@ public class GUIListener implements Listener {
                     return;
                 }
 
-                sendConfiguredMessage(player, "integerInputInvalid", "&eYou didn't type an &cinteger number&e. Try again or type &ccancel&e.");
+                sendConfiguredMessage(player, "invalidValue", "&eYou didn't type an &cinteger number&e. Try again or type &ccancel&e.");
                 player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
             });
             return;
@@ -252,7 +252,7 @@ public class GUIListener implements Listener {
         // Resolve the gamerule again before applying it instead of assuming the stored name is still valid.
         GameRule<?> rule = GameRule.getByName(pendingInput.gamerule());
         if (rule == null || rule.getType() != Integer.class) {
-            sendConfiguredMessage(player, "integerInputRuleUnavailable", "&cThat gamerule is no longer available.");
+            player.sendMessage(getPlugin().getPluginPrefix() + ChatColor.RED + "That gamerule is no longer available.");
             player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
             reopenGamerulePage(player, pendingInput);
             return;
@@ -280,13 +280,7 @@ public class GUIListener implements Listener {
         player.sendMessage(getPlugin().getPluginPrefix() + ColorUtils.translateColorCodes(message));
     }
 
-    // Sends a configurable localized message and replaces the %gamerule% placeholder.
-    private void sendConfiguredMessage(Player player, String path, String fallback, String gamerule) {
-        String message = getPlugin().getConfig().getString(path, fallback).replace("%gamerule%", gamerule);
-        player.sendMessage(getPlugin().getPluginPrefix() + ColorUtils.translateColorCodes(message));
-    }
-
-    // Sends the integer-input prompt and replaces both %gamerule% and %default_value% placeholders.
+    // Sends the value-input prompt and replaces both %gamerule% and %default_value% placeholders.
     private void sendConfiguredMessage(Player player, String path, String fallback, String gamerule, String defaultValue) {
         String message = getPlugin().getConfig().getString(path, fallback)
                 .replace("%gamerule%", gamerule)
@@ -369,7 +363,7 @@ public class GUIListener implements Listener {
 
         // Utility actions also require an active selected world.
         if (selectedWorld == null) {
-            sendConfiguredMessage(p, "noWorldSelected", "&cNo world selected.");
+            p.sendMessage(getPlugin().getPluginPrefix() + ChatColor.RED + "No world selected.");
             p.playSound(p.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
             p.openInventory(GUI.guiBuilder(p));
             return;
