@@ -22,17 +22,13 @@ noPermission: "&cYou don't have permission to use this command."
 # Gamerule not found message.
 gameruleNotFound: "&cGamerule description and item not found.\n&cAdd description and item on config.yml file."
 
-# Integer gamerule chat input messages.
-# Available placeholders for integerInputPrompt: %gamerule%, %default_value%
-integerInputPrompt: "&eType the new integer value for &b%gamerule%&e in chat. &7Default value: &f%default_value%&e. Your message will not be sent to other players."
-integerInputCancelHint: "&7Type &ccancel&7 to go back without changing it."
-integerInputInvalid: "&eYou didn't type an &cinteger number&e. Try again or type &ccancel&e."
-integerInputCancelled: "&eGamerule change cancelled."
-integerInputTooManyInvalid: "&cToo many invalid attempts. Gamerule change cancelled and chat input restored."
-integerInputUnknownRule: "&cUnknown gamerule: &f%gamerule%"
-integerInputNotInteger: "&cThis gamerule is not an integer gamerule."
-integerInputRuleUnavailable: "&cThat gamerule is no longer available."
-noWorldSelected: "&cNo world selected."
+# Messages shown while entering a gamerule value through chat.
+# Available placeholders for valuePrompt: %gamerule%, %default_value%
+valuePrompt: "&eType the new integer value for &b%gamerule%&e in chat. &7Default value: &f%default_value%&e."
+cancelHint: "&7Type &ccancel&7 to go back without changing it."
+invalidValue: "&eYou didn't type an &cinteger number&e. Try again or type &ccancel&e."
+changeCancelled: "&eGamerule change cancelled."
+tooManyInvalid: "&cToo many invalid attempts. Gamerule change cancelled."
 
 # Minecraft 26.x / Java 25 gamerule keys.
 # Gamerules are now namespaced snake_case IDs, e.g. minecraft:freeze_damage.
