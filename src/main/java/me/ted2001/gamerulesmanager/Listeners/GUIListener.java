@@ -42,10 +42,12 @@ public class GUIListener implements Listener {
 
     @EventHandler
     public void onGuiClick(InventoryClickEvent e) {
+        // Only handle inventories created by GamerulesManager.
         if (!(e.getView().getTopInventory().getHolder() instanceof GuiInventoryHolder holder)) {
             return;
         }
 
+        // This listener is responsible only for the two gamerule pages, not the world selector.
         if (holder.getMenuType() != GuiInventoryHolder.MenuType.GAMERULE_PAGE_1
                 && holder.getMenuType() != GuiInventoryHolder.MenuType.GAMERULE_PAGE_2) {
             return;
@@ -58,11 +60,13 @@ public class GUIListener implements Listener {
             return;
         }
 
+        // Ignore empty slots.
         ItemStack clickedItem = e.getCurrentItem();
         if (clickedItem == null) {
             return;
         }
 
+        // Gamerule actions always operate on the world selected by this player.
         World selectedWorld = PlayerSessionManager.getSelectedWorld(p);
         if (selectedWorld == null) {
             p.sendMessage(getPlugin().getPluginPrefix() + ChatColor.RED + "No world selected.");
@@ -70,6 +74,7 @@ public class GUIListener implements Listener {
             return;
         }
 
+        // Read the internal action ID instead of relying on the item's visible display name.
         String action = GuiItemData.getAction(clickedItem);
         if (action == null) {
             return;
@@ -77,6 +82,7 @@ public class GUIListener implements Listener {
 
         int page = holder.getMenuType() == GuiInventoryHolder.MenuType.GAMERULE_PAGE_2 ? 2 : 1;
 
+        // Gamerule entries carry their own rule name and are handled separately from utility buttons.
         if (action.equals("gamerule")) {
             handleGameruleClick(e, p, selectedWorld, page, clickedItem);
             return;
@@ -92,6 +98,7 @@ public class GUIListener implements Listener {
             return;
         }
 
+        // Resolve the stored gamerule key and make sure the rule is usable in this specific world.
         GameRule<?> gamerule = GameRuleRegistryUtil.getByName(gameruleName);
         if (gamerule == null || !GameRuleRegistryUtil.isAvailableInWorld(gamerule, selectedWorld)) {
             player.sendMessage(getPlugin().getPluginPrefix() + ChatColor.RED + "That gamerule is not available in this world.");
@@ -100,6 +107,7 @@ public class GUIListener implements Listener {
         }
 
         if (gamerule.getType() == Boolean.class) {
+            // Boolean gamerules can be toggled immediately with one click.
             GameRule<Boolean> booleanRule = (GameRule<Boolean>) gamerule;
             booleanGameruleSet(booleanRule, selectedWorld.getGameRuleValue(booleanRule), selectedWorld, player);
 
@@ -191,10 +199,12 @@ public class GUIListener implements Listener {
 
         final int value;
         try {
+            // Integer.parseInt accepts normal signed integer input, including negative values.
             value = Integer.parseInt(input);
         } catch (NumberFormatException ex) {
             int invalidAttempts = pendingInput.invalidAttempts() + 1;
 
+            // After the maximum number of invalid values, cancel the edit and restore normal chat behaviour.
             if (invalidAttempts >= MAX_INVALID_ATTEMPTS) {
                 pendingValueInputs.remove(player.getUniqueId());
                 Bukkit.getScheduler().runTask(getPlugin(), () -> {
@@ -209,6 +219,7 @@ public class GUIListener implements Listener {
                 return;
             }
 
+            // Preserve the original edit context while allowing the player one more attempt.
             pendingValueInputs.put(player.getUniqueId(), pendingInput.withInvalidAttempts(invalidAttempts));
             Bukkit.getScheduler().runTask(getPlugin(), () -> {
                 if (!player.isOnline()) {
@@ -221,16 +232,19 @@ public class GUIListener implements Listener {
             return;
         }
 
+        // A valid value completes the input flow. Bukkit world and GUI operations run on the main thread.
         pendingValueInputs.remove(player.getUniqueId());
         Bukkit.getScheduler().runTask(getPlugin(), () -> applyIntegerGamerule(player, pendingInput, value));
     }
 
     // Applies the parsed integer gamerule value on the main server thread.
     private void applyIntegerGamerule(Player player, PendingValueInput pendingInput, int value) {
+        // The scheduled task may run after the player disconnects, so do nothing for an offline player.
         if (!player.isOnline()) {
             return;
         }
 
+        // Resolve the gamerule again and verify that it is still valid for the stored world before applying it.
         GameRule<?> rule = GameRuleRegistryUtil.getByName(pendingInput.gamerule());
         if (rule == null || rule.getType() != Integer.class
                 || !GameRuleRegistryUtil.isAvailableInWorld(rule, pendingInput.world())) {
@@ -244,6 +258,7 @@ public class GUIListener implements Listener {
         reopenGamerulePage(player, pendingInput);
     }
 
+    // Reopens the exact gamerule page and world the player was viewing before entering chat input.
     private void reopenGamerulePage(Player player, PendingValueInput pendingInput) {
         PlayerSessionManager.setSelectedWorld(player, pendingInput.world());
 
@@ -255,11 +270,13 @@ public class GUIListener implements Listener {
         player.openInventory(GUI.gameruleSetterGui(player, pendingInput.world()));
     }
 
+    // Sends a configurable message without placeholders.
     private void sendConfiguredMessage(Player player, String path, String fallback) {
         String message = getPlugin().getConfig().getString(path, fallback);
         player.sendMessage(getPlugin().getPluginPrefix() + ColorUtils.translateColorCodes(message));
     }
 
+    // Sends the value-input prompt and replaces both %gamerule% and %default_value% placeholders.
     private void sendConfiguredMessage(Player player, String path, String fallback, String gamerule, String defaultValue) {
         String message = getPlugin().getConfig().getString(path, fallback)
                 .replace("%gamerule%", gamerule)
@@ -267,19 +284,26 @@ public class GUIListener implements Listener {
         player.sendMessage(getPlugin().getPluginPrefix() + ColorUtils.translateColorCodes(message));
     }
 
+    // Toggles a boolean gamerule to the opposite of its current value.
     private void booleanGameruleSet(GameRule<Boolean> gamerule, boolean value, World world, Player p){
         world.setGameRule(gamerule,!value);
+
+        // Play feedback so the player knows the gamerule changed successfully.
         p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
     }
 
+    // Applies an integer gamerule value received through chat input.
     private void integerGameruleSetter(GameRule<Integer> gamerule, int value, World world,Player p){
         world.setGameRule(gamerule, value);
+
+        // Play feedback so the player knows the new value was accepted.
         p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
     }
 
     // Restore every gamerule that is actually available in the selected world.
     private void resetGamerules(World world){
         for (GameRule<?> gamerule : GameRuleRegistryUtil.getSortedGameRules(world)) {
+            // Boolean and integer rules must be reset using their matching Java value type.
             if (gamerule.getType() == Boolean.class) {
                 GameRule<Boolean> booleanRule = (GameRule<Boolean>) gamerule;
                 world.setGameRule(booleanRule, world.getGameRuleDefault(booleanRule));
@@ -301,44 +325,56 @@ public class GUIListener implements Listener {
             }
         }
 
+        // Store a per-player snapshot together with the source world for later paste feedback.
         PlayerSessionManager.setCopiedGamerules(player, world, copiedRules);
     }
 
+    // Handles navigation and utility buttons using internal action IDs rather than visible display names.
     private void handleActionButton(String action, Player p, World selectedWorld) {
         switch (action) {
+            // Return to the world-selection GUI.
             case "back" -> {
                 p.openInventory(GUI.guiBuilder(p));
                 p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_USE, 1, 1);
             }
+            // Close the GUI completely.
             case "exit" -> {
                 p.closeInventory();
                 p.playSound(p.getLocation(), Sound.ENTITY_VILLAGER_CELEBRATE, 1, 1);
             }
+            // Open the second page of gamerules.
             case "next_page" -> {
                 p.playSound(p.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 1, 1);
                 p.openInventory(GUI.gameruleSetterGuiPage2(p));
             }
+            // Return from page 2 to page 1.
             case "previous_page" -> {
                 p.playSound(p.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 1, 1);
                 p.openInventory(GUI.gameruleSetterGui(p, selectedWorld));
             }
+            // Reset all world-valid gamerules to their Minecraft defaults.
             case "reset" -> {
                 resetGamerules(selectedWorld);
                 p.openInventory(GUI.gameruleSetterGui(p, selectedWorld));
                 p.playSound(p.getLocation(), Sound.BLOCK_ENCHANTMENT_TABLE_USE, 1, 1);
             }
+            // Copy the selected world's gamerule values into this player's session.
             case "copy" -> {
                 copyGamerules(p, selectedWorld);
                 p.openInventory(GUI.guiBuilder(p));
                 p.playSound(p.getLocation(), Sound.UI_CARTOGRAPHY_TABLE_TAKE_RESULT, 1, 1);
             }
+            // Paste the player's previously copied gamerules into the selected world.
             case "paste" -> pasteGamerules(p, selectedWorld);
             default -> {
+                // Unknown internal GUI action: ignore it safely.
             }
         }
     }
 
+    // Pastes the gamerule snapshot stored in this player's session into the selected world.
     private void pasteGamerules(Player p, World selectedWorld) {
+        // Paste requires a previously copied gamerule snapshot.
         if (!PlayerSessionManager.hasCopiedGamerules(p)) {
             p.sendMessage(getPlugin().getPluginPrefix()
                     + ChatColor.RED + "" + ChatColor.BOLD + "You didn't copy any world.");
@@ -356,6 +392,7 @@ public class GUIListener implements Listener {
 
             String value = copiedGamerule.getValue();
 
+            // Restore the copied value using the Java type expected by the gamerule.
             if (gamerule.getType() == Integer.class) {
                 try {
                     selectedWorld.setGameRule(gamerule, Integer.parseInt(value));
@@ -368,6 +405,7 @@ public class GUIListener implements Listener {
             }
         }
 
+        // Refresh the GUI after the paste operation and give the player immediate feedback.
         p.playSound(p.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 1, 1);
         p.openInventory(GUI.gameruleSetterGui(p, selectedWorld));
 
@@ -386,11 +424,14 @@ public class GUIListener implements Listener {
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
+        // Clear both a pending chat edit and the normal GUI session when a player leaves the server.
         pendingValueInputs.remove(event.getPlayer().getUniqueId());
         PlayerSessionManager.clear(event.getPlayer());
     }
 
+    // Immutable snapshot of the context required while waiting for an integer value in chat.
     private record PendingValueInput(String gamerule, World world, int page, int invalidAttempts) {
+        // Records another invalid attempt without mutating the existing pending-input snapshot.
         private PendingValueInput withInvalidAttempts(int attempts) {
             return new PendingValueInput(gamerule, world, page, attempts);
         }
