@@ -12,10 +12,13 @@ Instead of remembering gamerule commands or switching between worlds manually, a
 
 | Plugin Version | Minecraft Version | Java Version |
 |---|---:|---:|
-| v5.x | Minecraft 26.2.x | Java 25 |
+| v5.x | Minecraft 26.1.x - 26.2.x | Java 25 |
 | v4.x | Minecraft 1.13 - 1.21 | Java 8+ |
 
-> **Important:** v5.x targets Minecraft 26.2.x and requires Java 25.
+> **Important:** v5.x supports Minecraft 26.1.x through 26.2.x and requires Java 25.
+>
+> Minimum supported version: **26.1.x**  
+> Latest tested version: **26.2.x**
 >
 > Servers running Minecraft 1.13 - 1.21 should use the latest v4.x release instead.
 
@@ -184,7 +187,7 @@ v5.x uses the gamerule names provided by modern Minecraft versions, which use sn
 
 Before moving from v4.x to v5.x:
 
-1. Make sure the server is running Minecraft 26.2.x.
+1. Make sure the server is running Minecraft 26.1.x or 26.2.x.
 2. Make sure the server is running Java 25.
 3. Back up the existing `config.yml`.
 4. Regenerate the config or migrate old camelCase gamerule names to snake_case.
