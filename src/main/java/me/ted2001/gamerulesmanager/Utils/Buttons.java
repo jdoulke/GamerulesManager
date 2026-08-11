@@ -50,6 +50,32 @@ public class Buttons {
         return previousButton;
     }
 
+    // Navigation button used only by the paginated world-selection GUI.
+    public ItemStack nextWorldPageButton(){
+        ItemStack nextButton = new ItemStack(Material.ARROW,1);
+        ItemMeta nextButtonMeta = nextButton.getItemMeta();
+        assert nextButtonMeta != null;
+        nextButtonMeta.setDisplayName(ChatColor.GREEN + "Next World Page.");
+        nextButtonMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_DESTROYS);
+        GuiItemData.setAction(nextButtonMeta, "next_world_page");
+        nextButton.setItemMeta(nextButtonMeta);
+
+        return nextButton;
+    }
+
+    // Navigation button used only by the paginated world-selection GUI.
+    public ItemStack previousWorldPageButton(){
+        ItemStack previousButton = new ItemStack(Material.ARROW,1);
+        ItemMeta previousButtonMeta = previousButton.getItemMeta();
+        assert previousButtonMeta != null;
+        previousButtonMeta.setDisplayName(ChatColor.GREEN + "Previous World Page.");
+        previousButtonMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_DESTROYS);
+        GuiItemData.setAction(previousButtonMeta, "previous_world_page");
+        previousButton.setItemMeta(previousButtonMeta);
+
+        return previousButton;
+    }
+
     public ItemStack exitButton(){
         ItemStack exitButton = new ItemStack(Material.DARK_OAK_DOOR,1);
         ItemMeta exitButtonMeta = exitButton.getItemMeta();
