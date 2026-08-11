@@ -25,7 +25,7 @@ public class GUI {
                 ChatColor.DARK_PURPLE + "Gamerule Manager" + ChatColor.AQUA + " " + ChatColor.BOLD + world.getName());
         holder.setInventory(gui);
 
-        List<GameRule<?>> gamerules = GameRuleRegistryUtil.getSortedGameRules();
+        List<GameRule<?>> gamerules = GameRuleRegistryUtil.getSortedGameRules(world);
         GameruleCreator creator = new GameruleCreator();
 
         for (int i = 0; i < gamerules.size() && i < 36; i++) {
@@ -57,7 +57,7 @@ public class GUI {
                 ChatColor.DARK_PURPLE + "Gamerule Manager Page 2" + ChatColor.AQUA + " " + ChatColor.BOLD + selectedWorld.getName());
         holder.setInventory(gui);
 
-        List<GameRule<?>> gamerules = GameRuleRegistryUtil.getSortedGameRules();
+        List<GameRule<?>> gamerules = GameRuleRegistryUtil.getSortedGameRules(selectedWorld);
         GameruleCreator creator = new GameruleCreator();
 
         int guiSlot = 0;
