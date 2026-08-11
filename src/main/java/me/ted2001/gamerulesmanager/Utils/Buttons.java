@@ -20,6 +20,7 @@ public class Buttons {
         assert backButtonMeta != null;
         backButtonMeta.setDisplayName(ChatColor.RED + "Get Back in World Selection.");
         backButtonMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_DESTROYS);
+        GuiItemData.setAction(backButtonMeta, "back");
         backButton.setItemMeta(backButtonMeta);
 
         return backButton;
@@ -31,16 +32,19 @@ public class Buttons {
         assert nextButtonMeta != null;
         nextButtonMeta.setDisplayName(ChatColor.RED + "Next page with Gamerules.");
         nextButtonMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_DESTROYS);
+        GuiItemData.setAction(nextButtonMeta, "next_page");
         nextButton.setItemMeta(nextButtonMeta);
 
         return nextButton;
     }
+
     public ItemStack previousPageButton(){
         ItemStack previousButton = new ItemStack(Material.ARROW,1);
         ItemMeta previousButtonMeta = previousButton.getItemMeta();
         assert previousButtonMeta != null;
         previousButtonMeta.setDisplayName(ChatColor.RED + "Previous page with Gamerules.");
         previousButtonMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_DESTROYS);
+        GuiItemData.setAction(previousButtonMeta, "previous_page");
         previousButton.setItemMeta(previousButtonMeta);
 
         return previousButton;
@@ -52,6 +56,7 @@ public class Buttons {
         assert exitButtonMeta != null;
         exitButtonMeta.setDisplayName(ChatColor.RED + "EXIT");
         exitButtonMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_DESTROYS);
+        GuiItemData.setAction(exitButtonMeta, "exit");
         exitButton.setItemMeta(exitButtonMeta);
 
         return exitButton;
@@ -64,12 +69,14 @@ public class Buttons {
         assert resetButtonMeta != null;
         resetButtonMeta.setDisplayName(ChatColor.RED + "Reset all " + ChatColor.YELLOW + "Gamerules");
         resetButtonMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_DESTROYS);
-        lore.add(net.md_5.bungee.api.ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(getPlugin().getConfig().getString("resetGamerule"))));
+        lore.add(ColorUtils.translateColorCodes(Objects.requireNonNull(getPlugin().getConfig().getString("resetGamerule"))));
         resetButtonMeta.setLore(lore);
+        GuiItemData.setAction(resetButtonMeta, "reset");
         resetButton.setItemMeta(resetButtonMeta);
 
         return resetButton;
     }
+
     public ItemStack copyButton(World w){
         ArrayList<String> lore = new ArrayList<>();
         ItemStack copyButton = new ItemStack(Material.BOOK,1);
@@ -77,12 +84,14 @@ public class Buttons {
         assert copyButtonMeta != null;
         copyButtonMeta.setDisplayName(ChatColor.DARK_BLUE + "Copy " + ChatColor.YELLOW + "Gamerules");
         copyButtonMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_DESTROYS);
-        lore.add(net.md_5.bungee.api.ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(getPlugin().getConfig().getString("copyGamerule")))+ ChatColor.RED+ w.getName());
+        lore.add(ColorUtils.translateColorCodes(Objects.requireNonNull(getPlugin().getConfig().getString("copyGamerule"))) + ChatColor.RED + w.getName());
         copyButtonMeta.setLore(lore);
+        GuiItemData.setAction(copyButtonMeta, "copy");
         copyButton.setItemMeta(copyButtonMeta);
 
         return copyButton;
     }
+
     public ItemStack pasteButton(){
         ArrayList<String> lore = new ArrayList<>();
         ItemStack pasteButton = new ItemStack(Material.ENCHANTED_BOOK,1);
@@ -90,8 +99,9 @@ public class Buttons {
         assert pasteButtonMeta != null;
         pasteButtonMeta.setDisplayName(ChatColor.DARK_RED + "Paste " + ChatColor.YELLOW + "Gamerules");
         pasteButtonMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_DESTROYS);
-        lore.add(net.md_5.bungee.api.ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(getPlugin().getConfig().getString("pasteGamerule"))));
+        lore.add(ColorUtils.translateColorCodes(Objects.requireNonNull(getPlugin().getConfig().getString("pasteGamerule"))));
         pasteButtonMeta.setLore(lore);
+        GuiItemData.setAction(pasteButtonMeta, "paste");
         pasteButton.setItemMeta(pasteButtonMeta);
 
         return pasteButton;
