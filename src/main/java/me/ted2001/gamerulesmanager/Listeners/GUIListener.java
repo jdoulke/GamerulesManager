@@ -1,36 +1,35 @@
 package me.ted2001.gamerulesmanager.Listeners;
 
 import me.ted2001.gamerulesmanager.GUI;
-
-
-
 import me.ted2001.gamerulesmanager.Utils.CopyGamerules;
 import me.ted2001.gamerulesmanager.Utils.GameruleCreator;
-import net.wesjd.anvilgui.AnvilGUI;
+import me.ted2001.gamerulesmanager.Utils.PlayerSessionManager;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static me.ted2001.gamerulesmanager.GUI.*;
 import static me.ted2001.gamerulesmanager.GamerulesManager.*;
-import me.ted2001.gamerulesmanager.Utils.PlayerSessionManager;
 import static org.bukkit.Bukkit.getServer;
 
 @SuppressWarnings({"ConstantConditions", "rawtypes", "unchecked"})
 public class GUIListener implements Listener {
 
-
+    private final Map<UUID, PendingValueInput> pendingValueInputs = new ConcurrentHashMap<>();
 
     @EventHandler
     public void onGuiClick(InventoryClickEvent e) {
@@ -63,8 +62,9 @@ public class GUIListener implements Listener {
                             flag = false;
                             break;
                         }else {
-                            p.closeInventory();
-                            valueReceiver(p, gamerules[i]);
+                            valueReceiver(p, gamerules[i], 1);
+                            flag = false;
+                            break;
                         }
                     }
                 }if(flag)
@@ -96,8 +96,9 @@ public class GUIListener implements Listener {
                             flag = false;
                             break;
                         }else {
-                            p.closeInventory();
-                            valueReceiver(p, gamerules[i]);
+                            valueReceiver(p, gamerules[i], 2);
+                            flag = false;
+                            break;
                         }
                     }
                 }if(flag)
@@ -108,8 +109,7 @@ public class GUIListener implements Listener {
         }
     }
 
-    @SuppressWarnings({"rawtypes", "unchecked"})
-    private void valueReceiver(Player p, String gamerule) {
+    private void valueReceiver(Player p, String gamerule, int page) {
         World world = PlayerSessionManager.getSelectedWorld(p);
 
         if (world == null) {
@@ -132,47 +132,92 @@ public class GUIListener implements Listener {
             return;
         }
 
-        new AnvilGUI.Builder()
-                .itemLeft(getItem())
-                .onClick((slot, stateSnapshot) -> {
-                    if (slot != AnvilGUI.Slot.OUTPUT) {
-                        return Collections.emptyList();
-                    }
+        pendingValueInputs.put(p.getUniqueId(), new PendingValueInput(gamerule, world, page));
+        p.closeInventory();
+        p.sendMessage(getPlugin().getPluginPrefix()
+                + ChatColor.YELLOW + "Type the new integer value for "
+                + ChatColor.AQUA + gamerule
+                + ChatColor.YELLOW + " in chat. Your message will not be sent to other players.");
+        p.sendMessage(getPlugin().getPluginPrefix()
+                + ChatColor.GRAY + "Type " + ChatColor.RED + "cancel" + ChatColor.GRAY + " to go back without changing it.");
+    }
 
-                    String text = stateSnapshot.getText().trim();
-                    int value;
+    @EventHandler
+    public void onPlayerChat(AsyncPlayerChatEvent event) {
+        Player player = event.getPlayer();
+        PendingValueInput pendingInput = pendingValueInputs.get(player.getUniqueId());
 
-                    try {
-                        value = Integer.parseInt(text);
-                    } catch (NumberFormatException ex) {
-                        p.sendMessage(getPlugin().getPluginPrefix()
-                                + ChatColor.YELLOW + "You didn't type an "
-                                + ChatColor.RED + "integer number"
-                                + ChatColor.YELLOW + ".");
+        if (pendingInput == null) {
+            return;
+        }
 
-                        p.playSound(p.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
+        event.setCancelled(true);
+        String input = event.getMessage().trim();
 
-                        return Collections.singletonList(
-                                AnvilGUI.ResponseAction.replaceInputText("Enter integer number")
-                        );
-                    }
+        if (input.equalsIgnoreCase("cancel")) {
+            pendingValueInputs.remove(player.getUniqueId());
+            Bukkit.getScheduler().runTask(getPlugin(), () -> {
+                if (!player.isOnline()) {
+                    return;
+                }
 
-                    integerGameruleSetter((GameRule) rule, value, world, p);
+                player.sendMessage(getPlugin().getPluginPrefix() + ChatColor.YELLOW + "Gamerule change cancelled.");
+                reopenGamerulePage(player, pendingInput);
+            });
+            return;
+        }
 
-                    if ((Integer) gamerulesSlots.get(gamerule) < 36) {
-                        return Collections.singletonList(
-                                AnvilGUI.ResponseAction.openInventory(gameruleSetterGui(p, world))
-                        );
-                    }
+        final int value;
+        try {
+            value = Integer.parseInt(input);
+        } catch (NumberFormatException ex) {
+            Bukkit.getScheduler().runTask(getPlugin(), () -> {
+                if (!player.isOnline()) {
+                    return;
+                }
 
-                    return Collections.singletonList(
-                            AnvilGUI.ResponseAction.openInventory(GUI.gameruleSetterGuiPage2(p))
-                    );
-                })
-                .text("0")
-                .title("Enter your value.")
-                .plugin(getPlugin())
-                .open(p);
+                player.sendMessage(getPlugin().getPluginPrefix()
+                        + ChatColor.YELLOW + "You didn't type an "
+                        + ChatColor.RED + "integer number"
+                        + ChatColor.YELLOW + ". Try again or type "
+                        + ChatColor.RED + "cancel"
+                        + ChatColor.YELLOW + ".");
+                player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
+            });
+            return;
+        }
+
+        pendingValueInputs.remove(player.getUniqueId());
+        Bukkit.getScheduler().runTask(getPlugin(), () -> applyIntegerGamerule(player, pendingInput, value));
+    }
+
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    private void applyIntegerGamerule(Player player, PendingValueInput pendingInput, int value) {
+        if (!player.isOnline()) {
+            return;
+        }
+
+        GameRule<?> rule = GameRule.getByName(pendingInput.gamerule());
+        if (rule == null || rule.getType() != Integer.class) {
+            player.sendMessage(getPlugin().getPluginPrefix() + ChatColor.RED + "That gamerule is no longer available.");
+            player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
+            reopenGamerulePage(player, pendingInput);
+            return;
+        }
+
+        integerGameruleSetter((GameRule<Integer>) rule, value, pendingInput.world(), player);
+        reopenGamerulePage(player, pendingInput);
+    }
+
+    private void reopenGamerulePage(Player player, PendingValueInput pendingInput) {
+        PlayerSessionManager.setSelectedWorld(player, pendingInput.world());
+
+        if (pendingInput.page() == 2) {
+            player.openInventory(GUI.gameruleSetterGuiPage2(player));
+            return;
+        }
+
+        player.openInventory(GUI.gameruleSetterGui(player, pendingInput.world()));
     }
 
     private void booleanGameruleSet(GameRule<Boolean> gamerule, boolean value, World world, Player p){
@@ -185,17 +230,6 @@ public class GUIListener implements Listener {
     private void integerGameruleSetter(GameRule<Integer> gamerule, int value, World world,Player p){
         world.setGameRule(gamerule, value);
         p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
-    }
-    private ItemStack getItem(){
-        ArrayList<String> lore = new ArrayList<>();
-        ItemStack paper = new ItemStack(Material.PAPER);
-        ItemMeta paperMeta = paper.getItemMeta();
-        paperMeta.setDisplayName("Read paper's info.");
-        lore.add("Rename this to your wanted value.");
-        lore.add("Only integer numbers.");
-        paperMeta.setLore(lore);
-        paper.setItemMeta(paperMeta);
-        return paper;
     }
 
     private void resetGamerules(World world){
@@ -350,6 +384,10 @@ public class GUIListener implements Listener {
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
+        pendingValueInputs.remove(event.getPlayer().getUniqueId());
         PlayerSessionManager.clear(event.getPlayer());
+    }
+
+    private record PendingValueInput(String gamerule, World world, int page) {
     }
 }
