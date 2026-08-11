@@ -18,14 +18,25 @@ public final class GuiInventoryHolder implements InventoryHolder {
     }
 
     private final MenuType menuType;
+    private final int page;
     private Inventory inventory;
 
     public GuiInventoryHolder(MenuType menuType) {
+        this(menuType, 1);
+    }
+
+    // Stores the page number together with the menu type so paginated GUIs remain stateless.
+    public GuiInventoryHolder(MenuType menuType, int page) {
         this.menuType = menuType;
+        this.page = Math.max(1, page);
     }
 
     public MenuType getMenuType() {
         return menuType;
+    }
+
+    public int getPage() {
+        return page;
     }
 
     public void setInventory(Inventory inventory) {
