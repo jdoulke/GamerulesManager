@@ -1,6 +1,7 @@
 package me.ted2001.gamerulesmanager.Listeners;
 
 import me.ted2001.gamerulesmanager.GUI;
+import me.ted2001.gamerulesmanager.Utils.ColorUtils;
 import me.ted2001.gamerulesmanager.Utils.CopyGamerules;
 import me.ted2001.gamerulesmanager.Utils.GameruleCreator;
 import me.ted2001.gamerulesmanager.Utils.PlayerSessionManager;
@@ -29,15 +30,14 @@ import static org.bukkit.Bukkit.getServer;
 @SuppressWarnings({"ConstantConditions", "rawtypes", "unchecked"})
 public class GUIListener implements Listener {
 
+    private static final int MAX_INVALID_ATTEMPTS = 2;
     private final Map<UUID, PendingValueInput> pendingValueInputs = new ConcurrentHashMap<>();
 
     @EventHandler
     public void onGuiClick(InventoryClickEvent e) {
 
         try {
-            //check if the user is clicking on the Gamerule Manager first page.
             if (e.getView().getTitle().contains(ChatColor.DARK_PURPLE + "Gamerule Manager" + ChatColor.AQUA + " ")) {
-                //players can not move items
                 e.setCancelled(true);
                 Inventory gui = e.getClickedInventory();
                 Player p = (Player) e.getWhoClicked();
@@ -46,7 +46,7 @@ public class GUIListener implements Listener {
                 World selectedWorld = PlayerSessionManager.getSelectedWorld(p);
 
                 if (selectedWorld == null) {
-                    p.sendMessage(getPlugin().getPluginPrefix() + ChatColor.RED + "No world selected.");
+                    sendConfiguredMessage(p, "noWorldSelected", "&cNo world selected.");
                     p.openInventory(GUI.guiBuilder(p));
                     return;
                 }
@@ -71,14 +71,13 @@ public class GUIListener implements Listener {
                     EssentialsButtons(e, p, selectedWorld);
             }
             if (e.getView().getTitle().contains(ChatColor.DARK_PURPLE + "Gamerule Manager Page 2" + ChatColor.AQUA + " ")){
-                //players can not move items
                 e.setCancelled(true);
                 Inventory gui = e.getClickedInventory();
                 Player p = (Player) e.getWhoClicked();
                 World selectedWorld = PlayerSessionManager.getSelectedWorld(p);
 
                 if (selectedWorld == null) {
-                    p.sendMessage(getPlugin().getPluginPrefix() + ChatColor.RED + "No world selected.");
+                    sendConfiguredMessage(p, "noWorldSelected", "&cNo world selected.");
                     p.openInventory(GUI.guiBuilder(p));
                     return;
                 }
@@ -113,7 +112,7 @@ public class GUIListener implements Listener {
         World world = PlayerSessionManager.getSelectedWorld(p);
 
         if (world == null) {
-            p.sendMessage(getPlugin().getPluginPrefix() + ChatColor.RED + "No world selected.");
+            sendConfiguredMessage(p, "noWorldSelected", "&cNo world selected.");
             p.openInventory(GUI.guiBuilder(p));
             return;
         }
@@ -121,25 +120,21 @@ public class GUIListener implements Listener {
         GameRule<?> rule = GameRule.getByName(gamerule);
 
         if (rule == null) {
-            p.sendMessage(getPlugin().getPluginPrefix() + ChatColor.RED + "Unknown gamerule: " + gamerule);
+            sendConfiguredMessage(p, "integerInputUnknownRule", "&cUnknown gamerule: &f%gamerule%", gamerule);
             p.playSound(p.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
             return;
         }
 
         if (rule.getType() != Integer.class) {
-            p.sendMessage(getPlugin().getPluginPrefix() + ChatColor.RED + "This gamerule is not an integer gamerule.");
+            sendConfiguredMessage(p, "integerInputNotInteger", "&cThis gamerule is not an integer gamerule.");
             p.playSound(p.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
             return;
         }
 
-        pendingValueInputs.put(p.getUniqueId(), new PendingValueInput(gamerule, world, page));
+        pendingValueInputs.put(p.getUniqueId(), new PendingValueInput(gamerule, world, page, 0));
         p.closeInventory();
-        p.sendMessage(getPlugin().getPluginPrefix()
-                + ChatColor.YELLOW + "Type the new integer value for "
-                + ChatColor.AQUA + gamerule
-                + ChatColor.YELLOW + " in chat. Your message will not be sent to other players.");
-        p.sendMessage(getPlugin().getPluginPrefix()
-                + ChatColor.GRAY + "Type " + ChatColor.RED + "cancel" + ChatColor.GRAY + " to go back without changing it.");
+        sendConfiguredMessage(p, "integerInputPrompt", "&eType the new integer value for &b%gamerule%&e in chat. Your message will not be sent to other players.", gamerule);
+        sendConfiguredMessage(p, "integerInputCancelHint", "&7Type &ccancel&7 to go back without changing it.");
     }
 
     @EventHandler
@@ -161,7 +156,7 @@ public class GUIListener implements Listener {
                     return;
                 }
 
-                player.sendMessage(getPlugin().getPluginPrefix() + ChatColor.YELLOW + "Gamerule change cancelled.");
+                sendConfiguredMessage(player, "integerInputCancelled", "&eGamerule change cancelled.");
                 reopenGamerulePage(player, pendingInput);
             });
             return;
@@ -171,17 +166,29 @@ public class GUIListener implements Listener {
         try {
             value = Integer.parseInt(input);
         } catch (NumberFormatException ex) {
+            int invalidAttempts = pendingInput.invalidAttempts() + 1;
+
+            if (invalidAttempts >= MAX_INVALID_ATTEMPTS) {
+                pendingValueInputs.remove(player.getUniqueId());
+                Bukkit.getScheduler().runTask(getPlugin(), () -> {
+                    if (!player.isOnline()) {
+                        return;
+                    }
+
+                    sendConfiguredMessage(player, "integerInputTooManyInvalid", "&cToo many invalid attempts. Gamerule change cancelled and chat input restored.");
+                    player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
+                    reopenGamerulePage(player, pendingInput);
+                });
+                return;
+            }
+
+            pendingValueInputs.put(player.getUniqueId(), pendingInput.withInvalidAttempts(invalidAttempts));
             Bukkit.getScheduler().runTask(getPlugin(), () -> {
                 if (!player.isOnline()) {
                     return;
                 }
 
-                player.sendMessage(getPlugin().getPluginPrefix()
-                        + ChatColor.YELLOW + "You didn't type an "
-                        + ChatColor.RED + "integer number"
-                        + ChatColor.YELLOW + ". Try again or type "
-                        + ChatColor.RED + "cancel"
-                        + ChatColor.YELLOW + ".");
+                sendConfiguredMessage(player, "integerInputInvalid", "&eYou didn't type an &cinteger number&e. Try again or type &ccancel&e.");
                 player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
             });
             return;
@@ -199,7 +206,7 @@ public class GUIListener implements Listener {
 
         GameRule<?> rule = GameRule.getByName(pendingInput.gamerule());
         if (rule == null || rule.getType() != Integer.class) {
-            player.sendMessage(getPlugin().getPluginPrefix() + ChatColor.RED + "That gamerule is no longer available.");
+            sendConfiguredMessage(player, "integerInputRuleUnavailable", "&cThat gamerule is no longer available.");
             player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
             reopenGamerulePage(player, pendingInput);
             return;
@@ -220,10 +227,18 @@ public class GUIListener implements Listener {
         player.openInventory(GUI.gameruleSetterGui(player, pendingInput.world()));
     }
 
+    private void sendConfiguredMessage(Player player, String path, String fallback) {
+        String message = getPlugin().getConfig().getString(path, fallback);
+        player.sendMessage(getPlugin().getPluginPrefix() + ColorUtils.translateColorCodes(message));
+    }
+
+    private void sendConfiguredMessage(Player player, String path, String fallback, String gamerule) {
+        String message = getPlugin().getConfig().getString(path, fallback).replace("%gamerule%", gamerule);
+        player.sendMessage(getPlugin().getPluginPrefix() + ColorUtils.translateColorCodes(message));
+    }
+
     private void booleanGameruleSet(GameRule<Boolean> gamerule, boolean value, World world, Player p){
-        //here set the gamerule value to !value
         world.setGameRule(gamerule,!value);
-        //play a sound to the player, so he realizes something happens.
         p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
     }
 
@@ -285,41 +300,36 @@ public class GUIListener implements Listener {
         String displayName = itemMeta.getDisplayName();
 
         if (selectedWorld == null) {
-            p.sendMessage(getPlugin().getPluginPrefix() + ChatColor.RED + "No world selected.");
+            sendConfiguredMessage(p, "noWorldSelected", "&cNo world selected.");
             p.playSound(p.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
             p.openInventory(GUI.guiBuilder(p));
             return;
         }
 
-        // Get back option
         if (displayName.equals(ChatColor.RED + "Get Back in World Selection.")) {
             p.openInventory(GUI.guiBuilder(p));
             p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_USE, 1, 1);
             return;
         }
 
-        // Exit option
         if (displayName.equals(ChatColor.RED + "EXIT")) {
             p.closeInventory();
             p.playSound(p.getLocation(), Sound.ENTITY_VILLAGER_CELEBRATE, 1, 1);
             return;
         }
 
-        // Next page option
         if (displayName.equals(ChatColor.RED + "Next page with Gamerules.")) {
             p.playSound(p.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 1, 1);
             p.openInventory(GUI.gameruleSetterGuiPage2(p));
             return;
         }
 
-        // Previous page option
         if (displayName.equals(ChatColor.RED + "Previous page with Gamerules.")) {
             p.playSound(p.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, 1, 1);
             p.openInventory(GUI.gameruleSetterGui(p, selectedWorld));
             return;
         }
 
-        // Reset option
         if (displayName.equals(ChatColor.RED + "Reset all " + ChatColor.YELLOW + "Gamerules")) {
             resetGamerules(selectedWorld);
             p.openInventory(GUI.gameruleSetterGui(p, selectedWorld));
@@ -327,7 +337,6 @@ public class GUIListener implements Listener {
             return;
         }
 
-        // Copy option
         if (displayName.equals(ChatColor.DARK_BLUE + "Copy " + ChatColor.YELLOW + "Gamerules")) {
             copyGamerules(p, selectedWorld);
             p.openInventory(GUI.guiBuilder(p));
@@ -335,7 +344,6 @@ public class GUIListener implements Listener {
             return;
         }
 
-        // Paste option
         if (displayName.equals(ChatColor.DARK_RED + "Paste " + ChatColor.YELLOW + "Gamerules")) {
             if (!PlayerSessionManager.hasCopiedGamerules(p)) {
                 p.sendMessage(getPlugin().getPluginPrefix()
@@ -388,6 +396,9 @@ public class GUIListener implements Listener {
         PlayerSessionManager.clear(event.getPlayer());
     }
 
-    private record PendingValueInput(String gamerule, World world, int page) {
+    private record PendingValueInput(String gamerule, World world, int page, int invalidAttempts) {
+        private PendingValueInput withInvalidAttempts(int attempts) {
+            return new PendingValueInput(gamerule, world, page, attempts);
+        }
     }
 }
