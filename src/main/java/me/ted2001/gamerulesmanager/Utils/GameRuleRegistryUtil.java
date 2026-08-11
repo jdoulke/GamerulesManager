@@ -4,6 +4,7 @@ import org.bukkit.GameRule;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Registry;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
@@ -29,9 +30,13 @@ public final class GameRuleRegistryUtil {
     }
 
     public static List<GameRule<?>> getSortedGameRules() {
-        return Registry.GAME_RULE.stream()
-                .map(gamerule -> (GameRule<?>) gamerule)
-                .sorted(Comparator.comparing(GameRuleRegistryUtil::getName))
-                .toList();
+        List<GameRule<?>> gamerules = new ArrayList<>();
+
+        for (GameRule gamerule : Registry.GAME_RULE) {
+            gamerules.add((GameRule<?>) gamerule);
+        }
+
+        gamerules.sort(Comparator.comparing(GameRuleRegistryUtil::getName));
+        return gamerules;
     }
 }
